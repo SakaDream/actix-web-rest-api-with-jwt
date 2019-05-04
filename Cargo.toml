@@ -1,0 +1,11 @@
+[package]
+name = "actix-web-rest-api-with-jwt"
+version = "0.1.0"
+authors = ["SakaDream <bahaimt@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+actix-web = "1.0.0-beta.2"
+actix-rt = "0.2.2"
+log = "0.4.6"
+env_logger = "0.6.1"
