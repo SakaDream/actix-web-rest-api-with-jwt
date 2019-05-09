@@ -1,33 +1,26 @@
+use crate::models::response::ResponseBody;
 use actix_web::{
     HttpResponse,
-    error::ResponseError,
     http::StatusCode,
 };
-use std::fmt::{self, Display};
 
-#[derive(Debug)]
 pub struct ServiceError {
     pub http_status: StatusCode,
-    pub message: String,
+    pub body: ResponseBody<String>,
 }
 
 impl ServiceError {
-    pub fn new(http_status: StatusCode, messaage: &str) -> ServiceError {
+    pub fn new(http_status: StatusCode, message: String) -> ServiceError {
         ServiceError {
             http_status,
-            message: messaage.to_string(),
+            body: ResponseBody {
+                message,
+                data: String::new(),
+            }
         }
     }
-}
 
-impl Display for ServiceError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "status code: {}, message: {}", self.http_status.as_str(), self.message.as_str())
-    }
-}
-
-impl ResponseError for ServiceError {
-    fn error_response(&self) -> HttpResponse {
-        HttpResponse::build(self.http_status).body(&self.message)
+    pub fn response(&self) -> HttpResponse {
+        HttpResponse::build(self.http_status).json(&self.body)
     }
 }

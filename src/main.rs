@@ -17,6 +17,7 @@ extern crate serde_json;
 extern crate dotenv;
 extern crate futures;
 extern crate failure;
+extern crate derive_more;
 
 mod api;
 mod config;
