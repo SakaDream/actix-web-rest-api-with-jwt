@@ -20,7 +20,7 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
                             .route(web::get().to_async(address_book_controller::find_by_id))
                     )
                     .service(
-                        web::resource("/{query}")
+                        web::resource("/query/{query}")
                             .route(web::get().to_async(address_book_controller::query))   
                     )
             )

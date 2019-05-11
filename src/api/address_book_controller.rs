@@ -26,7 +26,7 @@ pub fn find_by_id(id: web::Path<String>, pool: web::Data<Pool>) -> impl Future<I
     }
 }
 
-// GET api/address-book/{query}
+// GET api/address-book/query/{query}
 pub fn query(query: web::Path<String>, pool: web::Data<Pool>) -> impl Future<Item = HttpResponse, Error = Error> {
     match address_book_service::query(query.into_inner(), &pool) {
         Ok(people) => ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, people))),
