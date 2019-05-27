@@ -60,7 +60,7 @@ pub fn delete(id: i32, pool: &web::Data<Pool>) -> Result<String, ServiceError> {
             Some(_) => {
                 match Person::delete(id, &pool.get().unwrap()) {
                     Ok(_) => Ok(constants::MESSAGE_OK.to_string()),
-                    Err(_) => Err(ServiceError::new(StatusCode::INTERNAL_SERVER_ERROR, constants::MESSAGE_CAN_NOT_UPDATE_DATA.to_string())),
+                    Err(_) => Err(ServiceError::new(StatusCode::INTERNAL_SERVER_ERROR, constants::MESSAGE_CAN_NOT_DELETE_DATA.to_string())),
                 }
             },
             None => Err(ServiceError::new(StatusCode::NOT_FOUND, format!("Person with id {} not found", id))),

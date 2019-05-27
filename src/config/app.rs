@@ -12,15 +12,15 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
                         web::resource("")
                             .route(web::get().to_async(address_book_controller::find_all))
                             .route(web::post().to_async(address_book_controller::insert))
-                            .route(web::put().to_async(address_book_controller::update))
-                            .route(web::delete().to_async(address_book_controller::delete))
                     )
                     .service(
                         web::resource("/{id}")
                             .route(web::get().to_async(address_book_controller::find_by_id))
+                            .route(web::put().to_async(address_book_controller::update))
+                            .route(web::delete().to_async(address_book_controller::delete))
                     )
                     .service(
-                        web::resource("/{query}")
+                        web::resource("/query/{query}")
                             .route(web::get().to_async(address_book_controller::query))   
                     )
             )
