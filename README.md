@@ -1,14 +1,20 @@
 # Actix-web REST API
 
-A simple backend app using Actix-web
+A simple CRUD backend app using Actix-web and Diesel
 
 # Require
 
 - [Rust Stable](https://rustup.rs)
+- [Postgres](https://www.postgresql.org/)
 
 # How to run
 
-- Build and run project: `cargo run`
+- Create a database in postgres cli or [pgAdmin](https://www.pgadmin.org/) tool
+- Rename `.env.sample` to `.env` and update the database connection string in `DATABASE_URL` key.
+- Build with release profile: `cargo build --release`
+- Run release binary in command line/terminal. 
+  - Windows: `target/release/address_book_rest_api.exe`
+  - Linux/UNIX: `target/release/address_book_rest_api`
 - Enjoy! 😄
 
 # APIs
