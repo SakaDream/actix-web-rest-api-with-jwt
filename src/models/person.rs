@@ -31,8 +31,8 @@ impl Person {
         people.order(id.asc()).load::<Person>(conn)
     }
 
-    pub fn find_by_id(i: i32, conn: &Connection) -> QueryResult<Option<Person>> {
-        people.find(i).get_result::<Person>(conn).optional()
+    pub fn find_by_id(i: i32, conn: &Connection) -> QueryResult<Person> {
+        people.find(i).get_result::<Person>(conn)
     }
 
     pub fn query(query: String, conn: &Connection) -> QueryResult<Vec<Person>> {
