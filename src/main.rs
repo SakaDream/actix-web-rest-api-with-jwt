@@ -10,24 +10,31 @@ extern crate diesel;
 extern crate diesel_migrations;
 #[macro_use]
 extern crate serde_derive;
+#[macro_use]
+extern crate serde_json;
 extern crate actix_rt;
 extern crate env_logger;
 extern crate serde;
-extern crate serde_json;
 extern crate dotenv;
 extern crate futures;
 extern crate failure;
 extern crate derive_more;
+extern crate jsonwebtoken;
+extern crate uuid;
+extern crate bcrypt;
+extern crate time;
 
 mod api;
 mod config;
 mod constants;
 mod error;
+mod middleware;
 mod models;
 mod schema;
 mod services;
+mod utils;
 
-use actix_web::{HttpServer, App, middleware};
+use actix_web::{HttpServer, App};
 use std::{io, env};
 
 fn main() -> io::Result<()> {
@@ -47,7 +54,8 @@ fn main() -> io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .data(pool.clone())
-            .wrap(middleware::Logger::default())
+            .wrap(actix_web::middleware::Logger::default())
+            .wrap(crate::middleware::authen_middleware::Authentication)
             .configure(config::app::config_services)
         })
     .bind(&app_url)?
