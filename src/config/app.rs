@@ -7,6 +7,21 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
         web::scope("/api")
             .service(ping_controller::ping)
             .service(
+                web::scope("/auth")
+                    .service(
+                        web::resource("/signup")
+                            .route(web::post().to_async(account_controller::signup))
+                    )
+                    .service(
+                        web::resource("/login")
+                            .route(web::post().to_async(account_controller::login))
+                    )
+                    .service(
+                        web::resource("/logout")
+                            .route(web::post().to_async(account_controller::logout))
+                    )
+            )
+            .service(
                 web::scope("/address-book")
                     .service(
                         web::resource("")
