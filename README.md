@@ -1,6 +1,6 @@
-# Actix-web REST API
+# Actix-web REST API with JWT
 
-A simple CRUD backend app using Actix-web and Diesel
+A simple CRUD backend app using Actix-web, Diesel and JWT
 
 # Require
 
@@ -9,6 +9,7 @@ A simple CRUD backend app using Actix-web and Diesel
 
 # How to run
 
+- Rename `secret.key.sample` to `secret.key` or create your own key by running `head -c16 /dev/urandom > secret.key` in command line (Linux/UNIX only) and copy to `/src` folder
 - Create a database in postgres cli or [pgAdmin](https://www.pgadmin.org/) tool
 - Rename `.env.sample` to `.env` and update the database connection string in `DATABASE_URL` key.
 - Build with release profile: `cargo build --release`
@@ -29,7 +30,60 @@ A simple CRUD backend app using Actix-web and Diesel
     pong!
     ```
 
+### `POST /api/auth/signup`: Signup
+  - Request body:
+  ```
+  {
+     "username": string,
+     "email": string,
+     "password": string       // a raw password
+  }
+  ```
+  - Response
+    - 200 OK
+    ```
+    {
+       "message": "signup successfully",
+       "data": ""
+    }
+    ```
+    - 400 Bad Request
+    ```
+    {
+       "message": "User '{username}' is already registered",
+       "data": ""
+    }
+    ```
+
+### `POST /api/auth/login`: Login
+  - Request body:
+  ```
+  {
+     "username_or_email": string,
+     "password": string       // a raw password
+  }
+  ```
+  - Response
+    - 200 OK
+    ```
+    {
+       "message": "login successfully",
+       "data": {
+         "token": string      // bearer token
+       }
+    }
+    ```
+    - 400 Bad Request
+    ```
+    {
+       "message": "wrong username or password, please try again",
+       "data": ""
+    }
+    ```
+
 ### `GET /api/address-book`: Get all people information
+  - Header:
+    - Authorization: bearer \<token\>
   - Response
     - 200 OK
     ```
@@ -52,6 +106,8 @@ A simple CRUD backend app using Actix-web and Diesel
 ### `GET /api/address-book/{id}`: Get person information by id
   - Param path:
     - id: int32
+  - Header:
+    - Authorization: bearer \<token\>
   - Response
     - 200 OK
     ```
@@ -79,6 +135,8 @@ A simple CRUD backend app using Actix-web and Diesel
 ### `GET /api/address-book/{query}`: Search for person information by keyword
   - Param path:
     - query: string
+  - Header:
+    - Authorization: bearer \<token\>
   - Response
     - 200 OK
     ```
@@ -99,6 +157,8 @@ A simple CRUD backend app using Actix-web and Diesel
     ```
 
 ### `POST /api/address-book`: Add person information
+  - Header:
+    - Authorization: bearer \<token\>
   - Request body:
     ```
     {
@@ -129,6 +189,8 @@ A simple CRUD backend app using Actix-web and Diesel
 ### `PUT /api/address-book/{id}`: Update person information by id
   - Param path:
     - id: int32
+  - Header:
+    - Authorization: bearer \<token\>
   - Request body:
   ```
   {
@@ -159,6 +221,8 @@ A simple CRUD backend app using Actix-web and Diesel
 ### `DELETE /api/address-book/{id}`: Delete person information by id
   - Param path:
     - id: int32
+  - Header:
+    - Authorization: bearer \<token\>
   - Response
     - 200 OK
     ```
@@ -171,6 +235,17 @@ A simple CRUD backend app using Actix-web and Diesel
     ```
     {
       "message": "can not delete data",
+      "data": ""
+    }
+    ```
+
+### Errors:
+  - Invalid or missing token
+    - Status code: 401 Unauthorized
+    - Response:
+    ```
+    {
+      "message": "invalid token, please login again",
       "data": ""
     }
     ```
