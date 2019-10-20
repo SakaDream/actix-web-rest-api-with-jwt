@@ -18,8 +18,8 @@ Or using [Docker](https://www.docker.com/)
 - Rename `.env.sample` to `.env` and update the database connection string in `DATABASE_URL` key.
 - Build with release profile: `cargo build --release`
 - Run release binary in command line/terminal. 
-  - Windows: `target/release/address_book_rest_api.exe`
-  - Linux/UNIX: `target/release/address_book_rest_api`
+  - Windows: `target/release/actix-web-rest-api-with-jwt.exe`
+  - Linux/UNIX: `target/release/actix-web-rest-api-with-jwt`
 - Enjoy! 😄
 
 ### Docker
