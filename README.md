@@ -2,14 +2,16 @@
 
 A simple CRUD backend app using Actix-web, Diesel and JWT
 
-# Require
+## Require
 
 - [Rust Stable](https://rustup.rs)
 - [Postgres](https://www.postgresql.org/)
 
 Or using [Docker](https://www.docker.com/)
 
-# How to run
+## How to run
+
+### Manual
 
 - Rename `secret.key.sample` to `secret.key` or create your own key by running `head -c16 /dev/urandom > secret.key` in command line (Linux/UNIX only) and copy to `/src` folder
 - Create a database in postgres cli or [pgAdmin](https://www.pgadmin.org/) tool
@@ -25,11 +27,11 @@ Or using [Docker](https://www.docker.com/)
 - Enter into project directory and run `docker-compose up`
 - Enjoy! 😄
 
-# APIs
+## APIs
 
-## Address: **`localhost:8080`**
+### Address: **`localhost:8080`**
 
-### **`GET /api/ping`**: Ping
+### `GET /api/ping`: Ping
 
 - Response:
     - 200 OK
