@@ -52,7 +52,7 @@ where
 
     fn call(&mut self, mut req: ServiceRequest) -> Self::Future {
         // Bypass some account routes
-        for ignore_route in constants::IGNORE_ROUTES.into_iter() {
+        for ignore_route in constants::IGNORE_ROUTES.iter() {
             if req.path().starts_with(ignore_route) {
                 return Either::A(self.service.call(req));
             }

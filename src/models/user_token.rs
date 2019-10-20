@@ -1,7 +1,7 @@
 use crate::models::user::LoginInfoDTO;
 use jsonwebtoken::Header;
 
-pub static KEY: &'static [u8; 16] = include_bytes!("../secret.key");
+pub static KEY: [u8; 16] = *include_bytes!("../secret.key");
 static ONE_WEEK: i64 = 60 * 60 * 24 * 7;
 
 #[derive(Serialize, Deserialize)]
@@ -25,6 +25,6 @@ impl UserToken {
             login_session: login.login_session,
         };
 
-        jsonwebtoken::encode(&Header::default(), &payload, KEY).unwrap()
+        jsonwebtoken::encode(&Header::default(), &payload, &KEY).unwrap()
     }
 }

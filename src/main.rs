@@ -61,7 +61,7 @@ fn main() -> io::Result<()> {
     .bind(&app_url)?
     .start();
 
-    info!("Server is started at {}", &app_port);
+    info!("Server is started at {}", &app_url);
 
     sys.run()
 }

@@ -9,7 +9,7 @@ use actix_web::web;
 use jsonwebtoken::{TokenData, Validation};
 
 pub fn decode_token(token: String) -> jsonwebtoken::errors::Result<TokenData<UserToken>> {
-    jsonwebtoken::decode::<UserToken>(&token, KEY, &Validation::default())
+    jsonwebtoken::decode::<UserToken>(&token, &KEY, &Validation::default())
 }
 
 pub fn verify_token(token_data: &TokenData<UserToken>, pool: &web::Data<Pool>) -> Result<String, String> {
