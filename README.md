@@ -29,7 +29,7 @@ Or using [Docker](https://www.docker.com/)
 
 ## APIs
 
-### Address: **`localhost:8080`**
+### Address: **`localhost:8000`**
 
 ### `GET /api/ping`: Ping
 
