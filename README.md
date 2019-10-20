@@ -7,6 +7,8 @@ A simple CRUD backend app using Actix-web, Diesel and JWT
 - [Rust Stable](https://rustup.rs)
 - [Postgres](https://www.postgresql.org/)
 
+Or using [Docker](https://www.docker.com/)
+
 # How to run
 
 - Rename `secret.key.sample` to `secret.key` or create your own key by running `head -c16 /dev/urandom > secret.key` in command line (Linux/UNIX only) and copy to `/src` folder
@@ -16,6 +18,11 @@ A simple CRUD backend app using Actix-web, Diesel and JWT
 - Run release binary in command line/terminal. 
   - Windows: `target/release/address_book_rest_api.exe`
   - Linux/UNIX: `target/release/address_book_rest_api`
+- Enjoy! 😄
+
+### Docker
+
+- Enter into project directory and run `docker-compose up`
 - Enjoy! 😄
 
 # APIs
