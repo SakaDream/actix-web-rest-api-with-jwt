@@ -13,7 +13,8 @@ extern crate serde_derive;
 #[macro_use]
 extern crate serde_json;
 extern crate actix_rt;
-extern crate env_logger;
+// extern crate env_logger;
+extern crate log4rs;
 extern crate serde;
 extern crate dotenv;
 extern crate futures;
@@ -36,12 +37,13 @@ mod utils;
 
 use actix_web::{HttpServer, App};
 use std::{io, env};
+use std::default::Default;
 
 fn main() -> io::Result<()> {
     dotenv::dotenv().expect("Failed to read .env file");
-    env::set_var("RUST_LOG", "actix_web=debug");
-
-    env_logger::init();
+    // env::set_var("RUST_LOG", "actix_web=debug");
+    // env_logger::init();
+    let _handle = log4rs::init_file("log4rs.yaml",Default::default()).unwrap();
 
     let app_host = env::var("APP_HOST").expect("APP_HOST not found.");
     let app_port = env::var("APP_PORT").expect("APP_PORT not found.");
