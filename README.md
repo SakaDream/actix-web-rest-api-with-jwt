@@ -17,7 +17,7 @@ Or using [Docker](https://www.docker.com/)
 - Create a database in postgres cli or [pgAdmin](https://www.pgadmin.org/) tool
 - Rename `.env.sample` to `.env` and update the database connection string in `DATABASE_URL` key.
 - Build with release profile: `cargo build --release`
-- Run release binary in command line/terminal. 
+- Run release binary in command line/terminal.
   - Windows: `target/release/actix-web-rest-api-with-jwt.exe`
   - Linux/UNIX: `target/release/actix-web-rest-api-with-jwt`
 - Enjoy! 😄
@@ -40,6 +40,12 @@ Or using [Docker](https://www.docker.com/)
     ```
 
 ### `POST /api/auth/signup`: Signup
+```bash
+curl -X POST -i 'http://127.0.0.1:8000/api/auth/signup' -H "Content-Type: application/json" --data '{"username": "c",
+   "email": "c",
+   "password": "c" }'
+```
+   
   - Request body:
   ```
   {
