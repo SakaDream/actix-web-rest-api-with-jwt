@@ -32,7 +32,9 @@ Or using [Docker](https://www.docker.com/)
 ### Address: **`localhost:8000`**
 
 ### `GET /api/ping`: Ping
-
+```bash
+curl -X GET -i 'http://127.0.0.1:8000/api/ping'
+```
 - Response:
     - 200 OK
     ```
@@ -41,11 +43,12 @@ Or using [Docker](https://www.docker.com/)
 
 ### `POST /api/auth/signup`: Signup
 ```bash
-curl -X POST -i 'http://127.0.0.1:8000/api/auth/signup' -H "Content-Type: application/json" --data '{"username": "c",
+curl -X POST -i 'http://127.0.0.1:8000/api/auth/signup' \
+-H "Content-Type: application/json" --data '{"username": "c",
    "email": "c",
    "password": "c" }'
 ```
-   
+
   - Request body:
   ```
   {
@@ -71,6 +74,10 @@ curl -X POST -i 'http://127.0.0.1:8000/api/auth/signup' -H "Content-Type: applic
     ```
 
 ### `POST /api/auth/login`: Login
+```bash
+curl -X POST -H 'Content-Type: application/json' -i 'http://127.0.0.1:8000/api/auth/login'  \
+ --data '{"username_or_email":"c",  "password":"c"}'
+```
   - Request body:
   ```
   {
