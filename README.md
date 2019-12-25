@@ -104,6 +104,10 @@ curl -X POST -H 'Content-Type: application/json' -i 'http://127.0.0.1:8000/api/a
     ```
 
 ### `GET /api/address-book`: Get all people information
+```
+curl -X GET -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' -i 'http://127.0.0.1:8000/api/address-book'
+'
+```
   - Header:
     - Authorization: bearer \<token\>
   - Response
@@ -126,6 +130,9 @@ curl -X POST -H 'Content-Type: application/json' -i 'http://127.0.0.1:8000/api/a
     ```
 
 ### `GET /api/address-book/{id}`: Get person information by id
+```
+curl -X GET -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' -i 'http://127.0.0.1:8000/api/address-book/2'
+```
   - Param path:
     - id: int32
   - Header:
@@ -179,6 +186,17 @@ curl -X POST -H 'Content-Type: application/json' -i 'http://127.0.0.1:8000/api/a
     ```
 
 ### `POST /api/address-book`: Add person information
+```
+curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' -i 'http://127.0.0.1:8000/api/address-book' --data '{
+  "name": "a",
+  "gender": true,
+  "age": 32,
+  "address": "addr",
+  "phone": "133",
+  "email": "e@q.com"
+}
+'
+```
   - Header:
     - Authorization: bearer \<token\>
   - Request body:
