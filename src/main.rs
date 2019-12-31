@@ -35,9 +35,12 @@ mod services;
 mod utils;
 
 use actix_web::{HttpServer, App};
+use actix_service::Service;
+use futures::FutureExt;
 use std::{io, env};
 
-fn main() -> io::Result<()> {
+#[actix_rt::main]
+async fn main() -> io::Result<()> {
     dotenv::dotenv().expect("Failed to read .env file");
     env::set_var("RUST_LOG", "actix_web=debug");
 
@@ -48,7 +51,6 @@ fn main() -> io::Result<()> {
     let app_url = format!("{}:{}", &app_host, &app_port);
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL not found.");
 
-    let sys = actix_rt::System::new("address-book");
     let pool = config::db::migrate_and_config_db(&db_url);
 
     HttpServer::new(move || {
@@ -56,12 +58,12 @@ fn main() -> io::Result<()> {
             .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
+            .wrap_fn(|req, srv| {
+                srv.call(req).map(|res| res)
+            })
             .configure(config::app::config_services)
         })
     .bind(&app_url)?
-    .start();
-
-    info!("Server is started at {}", &app_url);
-
-    sys.run()
+    .run()
+    .await
 }
