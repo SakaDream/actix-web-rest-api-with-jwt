@@ -5,29 +5,29 @@ authors = ["SakaDream <bahaimt@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-actix-web = "1.0.8"
-actix-rt = "0.2.5"
-actix-service = "0.4.2"
+actix-web = "2.0.0"
+actix-rt = "1.0.0"
+actix-service = "1.0.1"
 log = "0.4.8"
 env_logger = "0.7.1"
 diesel_migrations = "1.4.0"
-serde = "1.0.102"
-serde_derive = "1.0.102"
-serde_json = "1.0.41"
+serde = "1.0.104"
+serde_derive = "1.0.104"
+serde_json = "1.0.44"
 dotenv = "0.15.0"
-futures = "0.1.29"
+futures = "0.3.1"
 failure = "0.1.6"
-derive_more = "0.15.0"
+derive_more = "0.99.2"
 jsonwebtoken = "6.0.1"
 bcrypt = "0.6.1"
-time = "0.1.42"
+time = "0.2.1"
 
 [dependencies.diesel]
 version = "1.4.3"
 features = ["postgres", "r2d2", "chrono"]
 
 [dependencies.chrono]
-version = "0.4.9"
+version = "0.4.10"
 features = ["serde"]
 
 [dependencies.uuid]

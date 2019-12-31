@@ -1,5 +1,6 @@
 use crate::models::user::LoginInfoDTO;
 use jsonwebtoken::Header;
+use time::PrimitiveDateTime;
 
 pub static KEY: [u8; 16] = *include_bytes!("../secret.key");
 static ONE_WEEK: i64 = 60 * 60 * 24 * 7;
@@ -17,7 +18,7 @@ pub struct UserToken {
 
 impl UserToken {
     pub fn generate_token(login: LoginInfoDTO) -> String {
-        let now = time::get_time().sec;
+        let now = PrimitiveDateTime::now().timestamp();
         let payload = UserToken {
             iat: now,
             exp: now + ONE_WEEK,
