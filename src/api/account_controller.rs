@@ -7,32 +7,35 @@ use crate::{
     },
     services::account_service,
 };
-use actix_web::{web, Error, HttpRequest, HttpResponse};
-use futures::future::{ok, Future};
+use actix_web::{web, HttpRequest, HttpResponse, Result};
 
 // POST api/auth/signup
-pub fn signup(user_dto: web::Json<UserDTO>, pool: web::Data<Pool>) -> impl Future<Item = HttpResponse, Error = Error> {
+pub async fn signup(user_dto: web::Json<UserDTO>, pool: web::Data<Pool>) -> Result<HttpResponse> {
     match account_service::signup(user_dto.0, &pool) {
-        Ok(message) => ok(HttpResponse::Ok().json(ResponseBody::new(&message, constants::EMPTY))),
-        Err(err) => ok(err.response()),
+        Ok(message) => Ok(HttpResponse::Ok().json(ResponseBody::new(&message, constants::EMPTY))),
+        Err(err) => Ok(err.response()),
     }
 }
 
 // POST api/auth/login
-pub fn login(login_dto: web::Json<LoginDTO>, pool: web::Data<Pool>) -> impl Future<Item = HttpResponse, Error = Error> {
+pub async fn login(login_dto: web::Json<LoginDTO>, pool: web::Data<Pool>) -> Result<HttpResponse> {
     match account_service::login(login_dto.0, &pool) {
-        Ok(token_res) => ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_LOGIN_SUCCESS, token_res))),
-        Err(err) => ok(err.response()),
+        Ok(token_res) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_LOGIN_SUCCESS, token_res))),
+        Err(err) => Ok(err.response()),
     }
 }
 
 // POST api/auth/logout
+<<<<<<< HEAD
 pub fn logout(req: HttpRequest, pool: web::Data<Pool>) -> impl Future<Item = HttpResponse, Error = Error> {
     debug!("{:?}",req);
+=======
+pub async fn logout(req: HttpRequest, pool: web::Data<Pool>) -> Result<HttpResponse> {
+>>>>>>> bbc4914b638c3950e229f029fdcb3eb0f9a8e7f6
     if let Some(authen_header) = req.headers().get(constants::AUTHORIZATION) {
         account_service::logout(authen_header, &pool);
-        ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_LOGOUT_SUCCESS, constants::EMPTY)))
+        Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_LOGOUT_SUCCESS, constants::EMPTY)))
     } else {
-        ok(HttpResponse::BadRequest().json(ResponseBody::new(constants::MESSAGE_TOKEN_MISSING, constants::EMPTY)))
+        Ok(HttpResponse::BadRequest().json(ResponseBody::new(constants::MESSAGE_TOKEN_MISSING, constants::EMPTY)))
     }
 }

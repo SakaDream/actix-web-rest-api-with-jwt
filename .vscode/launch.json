@@ -7,6 +7,24 @@
         {
             "type": "lldb",
             "request": "launch",
+            "name": "Debug executable 'actix-web-rest-api-with-jwt'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=actix-web-rest-api-with-jwt",
+                    "--package=actix-web-rest-api-with-jwt"
+                ],
+                "filter": {
+                    "name": "actix-web-rest-api-with-jwt",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
             "name": "Debug unit tests in executable 'actix-web-rest-api-with-jwt'",
             "cargo": {
                 "args": [
