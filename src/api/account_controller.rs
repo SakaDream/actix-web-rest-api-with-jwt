@@ -28,6 +28,7 @@ pub fn login(login_dto: web::Json<LoginDTO>, pool: web::Data<Pool>) -> impl Futu
 
 // POST api/auth/logout
 pub fn logout(req: HttpRequest, pool: web::Data<Pool>) -> impl Future<Item = HttpResponse, Error = Error> {
+    debug!("{:?}",req);
     if let Some(authen_header) = req.headers().get(constants::AUTHORIZATION) {
         account_service::logout(authen_header, &pool);
         ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_LOGOUT_SUCCESS, constants::EMPTY)))

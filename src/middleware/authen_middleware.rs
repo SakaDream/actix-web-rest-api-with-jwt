@@ -13,6 +13,7 @@ use futures::{
     Poll,
     future::{ok, Either, FutureResult},
 };
+use actix_web::http::header::{HeaderName, HeaderValue};
 
 pub struct Authentication;
 
@@ -52,7 +53,16 @@ where
 
     fn call(&mut self, mut req: ServiceRequest) -> Self::Future {
         // Bypass some account routes
+        debug!("{:?}",req.head_mut().headers());
+        let headers = req.headers_mut();
+        headers.append(HeaderName::from_static("content-length"),HeaderValue::from_static("true"));
+        // let (r, pl) = req.into_parts();
+        // debug!("{:?}",&r);
+        // debug!("{:?}",pl);
+        // let req2 = ServiceRequest::from_parts(r, pl);
+        // assert!(ServiceRequest::from_parts(r, pl).is_ok());
         for ignore_route in constants::IGNORE_ROUTES.iter() {
+            debug!("route:{}",ignore_route);
             if req.path().starts_with(ignore_route) {
                 return Either::A(self.service.call(req));
             }
