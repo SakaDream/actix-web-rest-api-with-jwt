@@ -26,12 +26,7 @@ pub async fn login(login_dto: web::Json<LoginDTO>, pool: web::Data<Pool>) -> Res
 }
 
 // POST api/auth/logout
-<<<<<<< HEAD
-pub fn logout(req: HttpRequest, pool: web::Data<Pool>) -> impl Future<Item = HttpResponse, Error = Error> {
-    debug!("{:?}",req);
-=======
 pub async fn logout(req: HttpRequest, pool: web::Data<Pool>) -> Result<HttpResponse> {
->>>>>>> bbc4914b638c3950e229f029fdcb3eb0f9a8e7f6
     if let Some(authen_header) = req.headers().get(constants::AUTHORIZATION) {
         account_service::logout(authen_header, &pool);
         Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_LOGOUT_SUCCESS, constants::EMPTY)))

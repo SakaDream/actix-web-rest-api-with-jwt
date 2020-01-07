@@ -13,6 +13,7 @@ extern crate serde_derive;
 #[macro_use]
 extern crate serde_json;
 extern crate actix_rt;
+extern crate actix_cors;
 // extern crate env_logger;
 extern crate log4rs;
 extern crate serde;
@@ -35,11 +36,12 @@ mod schema;
 mod services;
 mod utils;
 
-use actix_web::{HttpServer, App};
+use actix_web::{http, HttpServer, App};
 use actix_service::Service;
 use futures::FutureExt;
 use std::{io, env};
 use std::default::Default;
+use actix_cors::Cors;
 
 #[actix_rt::main]
 async fn main() -> io::Result<()> {
@@ -57,6 +59,14 @@ async fn main() -> io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
+            .wrap(Cors::new() //   run order: **2**
+                // .allowed_origin("http://127.0.0.1:8080")
+                .send_wildcard()
+                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+                .allowed_header(http::header::CONTENT_TYPE)
+                .max_age(3600)
+                .finish())
             .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)

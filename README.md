@@ -105,7 +105,7 @@ curl -X POST -H 'Content-Type: application/json' -i 'http://127.0.0.1:8000/api/a
 
 ### `POST /api/auth/login`: Logout
     ```bash
-    curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzcyNTc4NzksImV4cCI6MTU3Nzg2MjY3OSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiYzUxNWE3NTg3NGYzNGVjNGFmNDJmNWE2M2QxMDVjMGYifQ.B9w6FxFdypb5GCRMKXZ9CZWFxQLFjvmPSusMCtcE-Ac' -i 'http://127.0.0.1:8000/api/auth/logout' 
+    curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzcyNTc4NzksImV4cCI6MTU3Nzg2MjY3OSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiYzUxNWE3NTg3NGYzNGVjNGFmNDJmNWE2M2QxMDVjMGYifQ.B9w6FxFdypb5GCRMKXZ9CZWFxQLFjvmPSusMCtcE-Ac' -i 'http://127.0.0.1:8000/api/auth/logout'
     ```
 
 ### `GET /api/address-book`: Get all people information
@@ -294,3 +294,15 @@ curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0e
       "data": ""
     }
     ```
+### brower OPTIONS curl request example
+```
+curl -X OPTIONS -i 'http://127.0.0.1:8000/api/login' -H "Origin: http://example.com" -H "Access-Control-Request-Method: POST"
+```
+  - Response  
+  HTTP/1.1 200 OK
+  content-length: 0
+  access-control-max-age: 3600
+  access-control-allow-methods: POST,DELETE,GET,PUT
+  access-control-allow-origin: *
+  access-control-allow-headers: authorization,content-type,accept
+  date: Tue, 07 Jan 2020 15:17:48 GMT
