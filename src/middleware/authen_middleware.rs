@@ -60,11 +60,6 @@ where
         debug!("{:?}",req.head_mut().headers());
         let headers = req.headers_mut();
         headers.append(HeaderName::from_static("content-length"),HeaderValue::from_static("true"));
-        // let (r, pl) = req.into_parts();
-        // debug!("{:?}",&r);
-        // debug!("{:?}",pl);
-        // let req2 = ServiceRequest::from_parts(r, pl);
-        // assert!(ServiceRequest::from_parts(r, pl).is_ok());
         if Method::OPTIONS == *req.method() {
             authenticate_pass = true;
         } else {
