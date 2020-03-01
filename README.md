@@ -17,7 +17,7 @@ Or using [Docker](https://www.docker.com/)
 - Create a database in postgres cli or [pgAdmin](https://www.pgadmin.org/) tool
 - Rename `.env.sample` to `.env` and update the database connection string in `DATABASE_URL` key.
 - Build with release profile: `cargo build --release`
-- Run release binary in command line/terminal. 
+- Run release binary in command line/terminal.
   - Windows: `target/release/actix-web-rest-api-with-jwt.exe`
   - Linux/UNIX: `target/release/actix-web-rest-api-with-jwt`
 - Enjoy! 😄
@@ -32,7 +32,9 @@ Or using [Docker](https://www.docker.com/)
 ### Address: **`localhost:8000`**
 
 ### `GET /api/ping`: Ping
-
+```bash
+curl -X GET -i 'http://127.0.0.1:8000/api/ping'
+```
 - Response:
     - 200 OK
     ```
@@ -40,6 +42,13 @@ Or using [Docker](https://www.docker.com/)
     ```
 
 ### `POST /api/auth/signup`: Signup
+```bash
+curl -X POST -i 'http://127.0.0.1:8000/api/auth/signup' \
+-H "Content-Type: application/json" --data '{"username": "c",
+   "email": "c",
+   "password": "c" }'
+```
+
   - Request body:
   ```
   {
@@ -65,6 +74,10 @@ Or using [Docker](https://www.docker.com/)
     ```
 
 ### `POST /api/auth/login`: Login
+```bash
+curl -X POST -H 'Content-Type: application/json' -i 'http://127.0.0.1:8000/api/auth/login'  \
+ --data '{"username_or_email":"c",  "password":"c"}'
+```
   - Request body:
   ```
   {
@@ -90,7 +103,16 @@ Or using [Docker](https://www.docker.com/)
     }
     ```
 
+### `POST /api/auth/login`: Logout
+    ```bash
+    curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzcyNTc4NzksImV4cCI6MTU3Nzg2MjY3OSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiYzUxNWE3NTg3NGYzNGVjNGFmNDJmNWE2M2QxMDVjMGYifQ.B9w6FxFdypb5GCRMKXZ9CZWFxQLFjvmPSusMCtcE-Ac' -i 'http://127.0.0.1:8000/api/auth/logout'
+    ```
+
 ### `GET /api/address-book`: Get all people information
+```
+curl -X GET -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' -i 'http://127.0.0.1:8000/api/address-book'
+'
+```
   - Header:
     - Authorization: bearer \<token\>
   - Response
@@ -113,6 +135,9 @@ Or using [Docker](https://www.docker.com/)
     ```
 
 ### `GET /api/address-book/{id}`: Get person information by id
+```
+curl -X GET -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' -i 'http://127.0.0.1:8000/api/address-book/2'
+```
   - Param path:
     - id: int32
   - Header:
@@ -166,6 +191,17 @@ Or using [Docker](https://www.docker.com/)
     ```
 
 ### `POST /api/address-book`: Add person information
+```
+curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' -i 'http://127.0.0.1:8000/api/address-book' --data '{
+  "name": "a",
+  "gender": true,
+  "age": 32,
+  "address": "addr",
+  "phone": "133",
+  "email": "e@q.com"
+}
+'
+```
   - Header:
     - Authorization: bearer \<token\>
   - Request body:
@@ -258,3 +294,15 @@ Or using [Docker](https://www.docker.com/)
       "data": ""
     }
     ```
+### brower OPTIONS curl request example
+```
+curl -X OPTIONS -i 'http://127.0.0.1:8000/api/login' -H "Origin: http://example.com" -H "Access-Control-Request-Method: POST"
+```
+  - Response  
+  HTTP/1.1 200 OK
+  content-length: 0
+  access-control-max-age: 3600
+  access-control-allow-methods: POST,DELETE,GET,PUT
+  access-control-allow-origin: *
+  access-control-allow-headers: authorization,content-type,accept
+  date: Tue, 07 Jan 2020 15:17:48 GMT
