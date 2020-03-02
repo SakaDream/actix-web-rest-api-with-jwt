@@ -57,7 +57,6 @@ where
         let mut authenticate_pass: bool = false;
 
         // Bypass some account routes
-        debug!("{:?}",req.head_mut().headers());
         let headers = req.headers_mut();
         headers.append(HeaderName::from_static("content-length"),HeaderValue::from_static("true"));
         if Method::OPTIONS == *req.method() {
