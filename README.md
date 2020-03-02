@@ -324,7 +324,8 @@ curl -X DELETE -H 'Content-Type: application/json' \
 curl -X OPTIONS -i 'http://127.0.0.1:8000/api/login' \
   -H "Origin: http://example.com" -H "Access-Control-Request-Method: POST"
 ```
-  - Response  
+  - Response
+  ```
   HTTP/1.1 200 OK
   content-length: 0
   access-control-max-age: 3600
@@ -332,7 +333,7 @@ curl -X OPTIONS -i 'http://127.0.0.1:8000/api/login' \
   access-control-allow-origin: *
   access-control-allow-headers: authorization,content-type,accept
   date: Tue, 07 Jan 2020 15:17:48 GMT
-
+  ```
 
 ### Errors:
   - Invalid or missing token
