@@ -23,7 +23,6 @@ extern crate derive_more;
 extern crate jsonwebtoken;
 extern crate uuid;
 extern crate bcrypt;
-extern crate time;
 
 mod api;
 mod config;
