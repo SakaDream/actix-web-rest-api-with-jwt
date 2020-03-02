@@ -44,9 +44,12 @@ curl -X GET -i 'http://127.0.0.1:8000/api/ping'
 ### `POST /api/auth/signup`: Signup
 ```bash
 curl -X POST -i 'http://127.0.0.1:8000/api/auth/signup' \
--H "Content-Type: application/json" --data '{"username": "c",
-   "email": "c",
-   "password": "c" }'
+  -H "Content-Type: application/json" \
+  --data '{
+    "username": "user",
+    "email": "user@email.com",
+    "password": "4S3cr3tPa55w0rd"
+  }'
 ```
 
   - Request body:
@@ -76,7 +79,7 @@ curl -X POST -i 'http://127.0.0.1:8000/api/auth/signup' \
 ### `POST /api/auth/login`: Login
 ```bash
 curl -X POST -H 'Content-Type: application/json' -i 'http://127.0.0.1:8000/api/auth/login'  \
- --data '{"username_or_email":"c",  "password":"c"}'
+  --data '{"username_or_email":"user",  "password":"4S3cr3tPa55w0rd"}'
 ```
   - Request body:
   ```
@@ -104,14 +107,17 @@ curl -X POST -H 'Content-Type: application/json' -i 'http://127.0.0.1:8000/api/a
     ```
 
 ### `POST /api/auth/login`: Logout
-    ```bash
-    curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzcyNTc4NzksImV4cCI6MTU3Nzg2MjY3OSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiYzUxNWE3NTg3NGYzNGVjNGFmNDJmNWE2M2QxMDVjMGYifQ.B9w6FxFdypb5GCRMKXZ9CZWFxQLFjvmPSusMCtcE-Ac' -i 'http://127.0.0.1:8000/api/auth/logout'
-    ```
+```bash
+curl -X POST -H 'Content-Type: application/json' \
+  -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzcyNTc4NzksImV4cCI6MTU3Nzg2MjY3OSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiYzUxNWE3NTg3NGYzNGVjNGFmNDJmNWE2M2QxMDVjMGYifQ.B9w6FxFdypb5GCRMKXZ9CZWFxQLFjvmPSusMCtcE-Ac' \
+  -i 'http://127.0.0.1:8000/api/auth/logout'
+```
 
 ### `GET /api/address-book`: Get all people information
-```
-curl -X GET -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' -i 'http://127.0.0.1:8000/api/address-book'
-'
+```bash
+curl -X GET -H 'Content-Type: application/json' \
+  -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
+  -i 'http://127.0.0.1:8000/api/address-book'
 ```
   - Header:
     - Authorization: bearer \<token\>
@@ -135,8 +141,10 @@ curl -X GET -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eX
     ```
 
 ### `GET /api/address-book/{id}`: Get person information by id
-```
-curl -X GET -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' -i 'http://127.0.0.1:8000/api/address-book/2'
+```bash
+curl -X GET -H 'Content-Type: application/json' \
+  -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
+  -i 'http://127.0.0.1:8000/api/address-book/2'
 ```
   - Param path:
     - id: int32
@@ -167,6 +175,11 @@ curl -X GET -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eX
     ```
 
 ### `GET /api/address-book/{query}`: Search for person information by keyword
+```bash
+curl -X GET -H 'Content-Type: application/json' \
+  -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
+  -i 'http://127.0.0.1:8000/api/address-book/user'
+```
   - Param path:
     - query: string
   - Header:
@@ -191,15 +204,18 @@ curl -X GET -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eX
     ```
 
 ### `POST /api/address-book`: Add person information
-```
-curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' -i 'http://127.0.0.1:8000/api/address-book' --data '{
-  "name": "a",
-  "gender": true,
-  "age": 32,
-  "address": "addr",
-  "phone": "133",
-  "email": "e@q.com"
-}
+```bash
+curl -X POST -H 'Content-Type: application/json' \
+  -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
+  -i 'http://127.0.0.1:8000/api/address-book' \
+  --data '{
+    "name": "c",
+    "gender": true,
+    "age": 32,
+    "address": "addr",
+    "phone": "133",
+    "email": "e@q.com"
+  }
 '
 ```
   - Header:
@@ -232,6 +248,20 @@ curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0e
     ```  
 
 ### `PUT /api/address-book/{id}`: Update person information by id
+```bash
+curl -X PUT -H 'Content-Type: application/json' \
+  -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
+  -i 'http://127.0.0.1:8000/api/address-book/2' \
+  --data '{
+    "name": "b",
+    "gender": true,
+    "age": 32,
+    "address": "addr",
+    "phone": "133",
+    "email": "b@q.com"
+  }
+'
+```
   - Param path:
     - id: int32
   - Header:
@@ -264,6 +294,11 @@ curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0e
     ```
 
 ### `DELETE /api/address-book/{id}`: Delete person information by id
+```bash
+curl -X DELETE -H 'Content-Type: application/json' \
+  -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
+  -i 'http://127.0.0.1:8000/api/address-book/2'
+```
   - Param path:
     - id: int32
   - Header:
@@ -284,6 +319,22 @@ curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0e
     }
     ```
 
+### brower OPTIONS curl request example
+```bash
+curl -X OPTIONS -i 'http://127.0.0.1:8000/api/login' \
+  -H "Origin: http://example.com" -H "Access-Control-Request-Method: POST"
+```
+  - Response
+  ```
+  HTTP/1.1 200 OK
+  content-length: 0
+  access-control-max-age: 3600
+  access-control-allow-methods: POST,DELETE,GET,PUT
+  access-control-allow-origin: *
+  access-control-allow-headers: authorization,content-type,accept
+  date: Tue, 07 Jan 2020 15:17:48 GMT
+  ```
+
 ### Errors:
   - Invalid or missing token
     - Status code: 401 Unauthorized
@@ -294,15 +345,3 @@ curl -X POST -H 'Content-Type: application/json' -H 'Authorization: bearer eyJ0e
       "data": ""
     }
     ```
-### brower OPTIONS curl request example
-```
-curl -X OPTIONS -i 'http://127.0.0.1:8000/api/login' -H "Origin: http://example.com" -H "Access-Control-Request-Method: POST"
-```
-  - Response  
-  HTTP/1.1 200 OK
-  content-length: 0
-  access-control-max-age: 3600
-  access-control-allow-methods: POST,DELETE,GET,PUT
-  access-control-allow-origin: *
-  access-control-allow-headers: authorization,content-type,accept
-  date: Tue, 07 Jan 2020 15:17:48 GMT

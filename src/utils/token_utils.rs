@@ -6,10 +6,10 @@ use crate::{
     },
 };
 use actix_web::web;
-use jsonwebtoken::{TokenData, Validation};
+use jsonwebtoken::{DecodingKey, TokenData, Validation};
 
 pub fn decode_token(token: String) -> jsonwebtoken::errors::Result<TokenData<UserToken>> {
-    jsonwebtoken::decode::<UserToken>(&token, &KEY, &Validation::default())
+    jsonwebtoken::decode::<UserToken>(&token, &DecodingKey::from_secret(&KEY), &Validation::default())
 }
 
 pub fn verify_token(token_data: &TokenData<UserToken>, pool: &web::Data<Pool>) -> Result<String, String> {
