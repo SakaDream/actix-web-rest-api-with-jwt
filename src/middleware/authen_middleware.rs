@@ -63,7 +63,6 @@ where
             authenticate_pass = true;
         } else {
             for ignore_route in constants::IGNORE_ROUTES.iter() {
-                debug!("route:{}",ignore_route);
                 if req.path().starts_with(ignore_route) {
                     authenticate_pass = true;
                 }
