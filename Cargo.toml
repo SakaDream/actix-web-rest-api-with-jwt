@@ -17,17 +17,17 @@ serde_derive = "1.0.104"
 serde_json = "1.0.48"
 dotenv = "0.15.0"
 futures = "0.3.4"
-failure = "0.1.6"
+failure = "0.1.7"
 derive_more = "0.99.3"
 jsonwebtoken = "7.1.0"
-bcrypt = "0.6.1"
+bcrypt = "0.6.2"
 
 [dependencies.diesel]
 version = "1.4.3"
 features = ["postgres", "r2d2", "chrono"]
 
 [dependencies.chrono]
-version = "0.4.10"
+version = "0.4.11"
 features = ["serde"]
 
 [dependencies.uuid]
