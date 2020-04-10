@@ -106,7 +106,7 @@ curl -X POST -H 'Content-Type: application/json' -i 'http://127.0.0.1:8000/api/a
     }
     ```
 
-### `POST /api/auth/login`: Logout
+### `POST /api/auth/logout`: Logout
 ```bash
 curl -X POST -H 'Content-Type: application/json' \
   -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzcyNTc4NzksImV4cCI6MTU3Nzg2MjY3OSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiYzUxNWE3NTg3NGYzNGVjNGFmNDJmNWE2M2QxMDVjMGYifQ.B9w6FxFdypb5GCRMKXZ9CZWFxQLFjvmPSusMCtcE-Ac' \
