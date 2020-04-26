@@ -1,8 +1,9 @@
+name: Cross-platform CICD
 on: [push, pull_request]
 
 jobs:
-  check:
-    name: Check
+  cicd-linux:
+    name: CICD Linux
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
@@ -22,27 +23,10 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: check
-  
-  lints:
-    name: Lints
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
-      
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          components: rustfmt, clippy
-      
-      - name: Get temporary secret key
-        shell: sh
-        run: |
-          mv src/secret.key.sample src/secret.key
-      
+
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
+        continue-on-error: true
         with:
           command: fmt
           args: --all -- --check
@@ -53,23 +37,6 @@ jobs:
           command: clippy
           args: -- -D warnings
 
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
-      
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-
-      - name: Get temporary secret key
-        shell: sh
-        run: |
-          mv src/secret.key.sample src/secret.key
-        
       - name: Run cargo build
         uses: actions-rs/cargo@v1
         with:
@@ -80,4 +47,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: artifact-linux
-          path: target/release/actix-web-rest-api-with-jwt
+          path: target/release/actix-web-rest-api-with-jwt   
