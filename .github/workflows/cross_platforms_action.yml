@@ -63,14 +63,13 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Download libpq
+      - name: Download and install libpq
         shell: pwsh
         run: |
           New-Item -Path "." -Name "libs" -ItemType "directory"
           Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile libs\libpq.lib
-          
-      - name: Add libs folder to PATH
-        run: echo "::add-path::./libs"
+          $Env:PQ_LIB_DIR = "D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs"
+          $Env:Path += "D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs"
 
       - name: Get temporary secret key
         shell: cmd
