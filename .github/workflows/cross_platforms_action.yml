@@ -66,6 +66,7 @@ jobs:
       - name: Download and install libpq
         shell: pwsh
         run: |
+          Import-Module BitsTransfer
           Start-BitsTransfer -Source https://sakadream.me/cloud/index.php/s/Ik3n32v2we7MtJl/download -Destination libpq.dll
           $cp = Get-Location
           $env:Path += ';{$cp}'
