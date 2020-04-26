@@ -63,13 +63,9 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Download and install libpq
-        shell: pwsh
+      - name: Install postgresql
         run: |
-          New-Item -Path "." -Name "libs" -ItemType "directory"
-          Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile libs\libpq.lib
-          $Env:PQ_LIB_DIR = "D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs"
-          $Env:Path += "D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs"
+          choco install postgresql
 
       - name: Get temporary secret key
         shell: cmd
