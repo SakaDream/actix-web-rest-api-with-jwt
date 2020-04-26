@@ -63,13 +63,14 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Download and install libpq
+      - name: Download libpq
         shell: pwsh
         run: |
-          Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile libpq.lib
-          Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/Ik3n32v2we7MtJl/download -OutFile libpq.dll
-          $cp = Get-Location
-          $env:Path += "$($cp)"
+          New-Item -Path "c:\" -Name "libs" -ItemType "directory"
+          Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile c:\libs\libpq.lib
+          
+      - name: Add libs folder to PATH
+        run: echo "::add-path::c:\libs"
 
       - name: Get temporary secret key
         shell: cmd
