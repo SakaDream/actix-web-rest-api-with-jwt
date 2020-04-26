@@ -69,7 +69,7 @@ jobs:
           Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile libpq.lib
           Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/Ik3n32v2we7MtJl/download -OutFile libpq.dll
           $cp = Get-Location
-          $env:Path += ';{$cp}'
+          $env:Path += "$($cp)"
 
       - name: Get temporary secret key
         shell: cmd
