@@ -66,11 +66,11 @@ jobs:
       - name: Download libpq
         shell: pwsh
         run: |
-          New-Item -Path "c:\" -Name "libs" -ItemType "directory"
-          Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile c:\libs\libpq.lib
+          New-Item -Path "." -Name "libs" -ItemType "directory"
+          Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile libs\libpq.lib
           
       - name: Add libs folder to PATH
-        run: echo "::add-path::c:\libs"
+        run: echo "::add-path::./libs"
 
       - name: Get temporary secret key
         shell: cmd
