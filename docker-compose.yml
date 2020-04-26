@@ -9,7 +9,8 @@ services:
     environment:
     - POSTGRES_PASSWORD=postgres
   app:
-    build: .
+    container_name: address_book_be
+    image: sakadream/actix-web-rest-api-with-jwt
     restart: always
     ports:
     - "8000:8000"
