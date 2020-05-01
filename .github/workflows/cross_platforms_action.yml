@@ -17,12 +17,12 @@ jobs:
       - name: Install postgresql
         run: |
           New-Item -Path "." -Name "libs" -ItemType "directory"
-          Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile libs/libpq.lib
+          Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile libs\libpq.lib
 
       - name: Get temporary secret key
         shell: cmd
         run: |
-          ren src/secret.key.sample secret.key
+          ren src\secret.key.sample secret.key
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
@@ -45,4 +45,4 @@ jobs:
           dir D:/a/actix-web-rest-api-with-jwt/actix-web-rest-api-with-jwt/libs
           cargo build --release
         env:
-          RUSTFLAGS: -L D:/a/actix-web-rest-api-with-jwt/actix-web-rest-api-with-jwt/libs
+          RUSTFLAGS: -L D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs
