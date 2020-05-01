@@ -65,7 +65,8 @@ jobs:
 
       - name: Install postgresql
         run: |
-          choco install postgresql
+          New-Item -Path "." -Name "libs" -ItemType "directory"
+          Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile libs\libpq.lib
 
       - name: Get temporary secret key
         shell: cmd
@@ -78,7 +79,7 @@ jobs:
           command: check
           args: --release
         env:
-          RUSTFLAGS: -L C:/Program Files/PostgreSQL/12/lib
+          RUSTFLAGS: -L"D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs"
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
@@ -100,7 +101,7 @@ jobs:
           command: build
           args: --release
         env:
-          RUSTFLAGS: -L"C:/Program Files/PostgreSQL/12/lib"
+          RUSTFLAGS: -L"D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs"
 
   cicd-macos:
     name: CICD macOS
