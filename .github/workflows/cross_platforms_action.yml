@@ -78,7 +78,7 @@ jobs:
           command: check
           args: --release
         env:
-          RUSTFLAGS: -L"C:/Program Files/PostgreSQL/12/lib"
+          RUSTFLAGS: -L C:/Program Files/PostgreSQL/12/lib
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
