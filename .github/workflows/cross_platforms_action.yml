@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
-      
+
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -18,7 +18,7 @@ jobs:
         shell: sh
         run: |
           mv src/secret.key.sample src/secret.key
-        
+
       - name: Run cargo check
         uses: actions-rs/cargo@v1
         with:
@@ -57,7 +57,7 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
-      
+
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -65,18 +65,21 @@ jobs:
 
       - name: Install postgresql
         run: |
-          choco install postgresql
+          New-Item -Path "." -Name "libs" -ItemType "directory"
+          Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile libs\libpq.lib
 
       - name: Get temporary secret key
         shell: cmd
         run: |
           ren src\secret.key.sample secret.key
-        
+
       - name: Run cargo check
         uses: actions-rs/cargo@v1
         with:
           command: check
           args: --release
+        env:
+          RUSTFLAGS: -L D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
@@ -97,6 +100,8 @@ jobs:
         with:
           command: build
           args: --release
+        env:
+          RUSTFLAGS: -L D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs
 
   cicd-macos:
     name: CICD macOS
@@ -104,7 +109,7 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
-      
+
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -114,7 +119,7 @@ jobs:
         shell: sh
         run: |
           mv src/secret.key.sample src/secret.key
-        
+
       - name: Run cargo check
         uses: actions-rs/cargo@v1
         with:
