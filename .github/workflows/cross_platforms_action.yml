@@ -19,6 +19,12 @@ jobs:
         run: |
           mv src/secret.key.sample src/secret.key
 
+      - name: Run cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --release
+
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
         continue-on-error: true
@@ -67,6 +73,28 @@ jobs:
         run: |
           ren src\secret.key.sample secret.key
 
+      - name: Run cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --release
+        env:
+          RUSTFLAGS: -L D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs
+
+      - name: Run cargo fmt
+        uses: actions-rs/cargo@v1
+        continue-on-error: true
+        with:
+          command: fmt
+          args: --all -- --check
+
+      - name: Run cargo clippy
+        uses: actions-rs/cargo@v1
+        continue-on-error: true
+        with:
+          command: clippy
+          args: -- -D warnings
+
       - name: Run cargo build
         uses: actions-rs/cargo@v1
         with:
@@ -91,6 +119,12 @@ jobs:
         shell: sh
         run: |
           mv src/secret.key.sample src/secret.key
+
+      - name: Run cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --release
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
