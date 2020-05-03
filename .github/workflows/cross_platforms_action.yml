@@ -63,7 +63,7 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Install postgresql
+      - name: Download libpq.lib
         run: |
           New-Item -Path "." -Name "libs" -ItemType "directory"
           Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile libs\libpq.lib
