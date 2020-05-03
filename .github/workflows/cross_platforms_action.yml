@@ -73,12 +73,6 @@ jobs:
           command: build
           args: --release
 
-      - name: Upload binary for Docker actions
-        uses: actions/upload-artifact@v1
-        with:
-          name: artifact-linux
-          path: target/release/actix-web-rest-api-with-jwt
-
   cicd-windows:
     name: CICD Windows
     runs-on: windows-latest
