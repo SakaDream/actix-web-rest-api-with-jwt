@@ -9,7 +9,10 @@ services:
     environment:
     - POSTGRES_PASSWORD=postgres
   app:
-    build: .
+    container_name: address_book_be
+    build:
+      context: .
+      dockerfile: docker/local/Dockerfile
     restart: always
     ports:
     - "8000:8000"
