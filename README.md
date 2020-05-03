@@ -24,7 +24,8 @@ Or using [Docker](https://www.docker.com/)
 
 ### Docker
 
-- Enter into project directory and run `docker-compose up`
+- Enter into project directory
+- Run `docker-compose -f docker-compose.local.yml up` for local environment or `docker-compose -f docker-compose.prod.yml up` for production environment
 - Enjoy! 😄
 
 ## APIs

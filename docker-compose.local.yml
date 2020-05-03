@@ -1,0 +1,24 @@
+version: '3'
+services:
+  db:
+    container_name: address_book_db
+    image: postgres
+    restart: always
+    ports:
+    - "5432:5432"
+    environment:
+    - POSTGRES_PASSWORD=postgres
+  app:
+    container_name: address_book_be
+    build:
+      context: .
+      dockerfile: docker/local/Dockerfile
+    restart: always
+    ports:
+    - "8000:8000"
+    environment:
+    - APP_HOST=0.0.0.0
+    - APP_PORT=8000
+    - DATABASE_URL=postgres://postgres:postgres@db/postgres
+    depends_on:
+    - db
