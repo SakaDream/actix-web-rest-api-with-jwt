@@ -26,6 +26,33 @@ jobs:
       - name: Generate secret key
         run: head -c16 /dev/urandom > src/secret.key
 
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: docker-registry-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            docker-registry-
+            docker-
+
+      - name: Cache cargo index
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/git
+          key: docker-index-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            docker-index-
+            docker-
+
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: docker-build-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            docker-build-
+            docker-
+
       - name: Run cargo build
         uses: actions-rs/cargo@v1
         with:
