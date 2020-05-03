@@ -18,13 +18,7 @@ jobs:
         shell: sh
         run: |
           mv src/secret.key.sample src/secret.key
-
-      - name: Run cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --release
-
+      
       - name: Cache cargo registry
         uses: actions/cache@v1
         with:
@@ -52,6 +46,11 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
+      - name: Run cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --release
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
@@ -94,14 +93,6 @@ jobs:
         shell: cmd
         run: ren src\secret.key.sample secret.key
 
-      - name: Run cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --release
-        env:
-          RUSTFLAGS: -L D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs
-
       - name: Cache cargo registry
         uses: actions/cache@v1
         with:
@@ -128,6 +119,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+
+      - name: Run cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --release
+        env:
+          RUSTFLAGS: -L D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
@@ -167,13 +166,7 @@ jobs:
         shell: sh
         run: |
           mv src/secret.key.sample src/secret.key
-
-      - name: Run cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --release
-
+      
       - name: Cache cargo registry
         uses: actions/cache@v1
         with:
@@ -200,6 +193,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+
+      - name: Run cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --release
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
