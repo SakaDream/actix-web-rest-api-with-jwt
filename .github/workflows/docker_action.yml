@@ -96,5 +96,5 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: sakadream/actix-web-rest-api-with-jwt
-          add-git-labels: true
+          add_git_labels: true
           tag_with_ref: true
