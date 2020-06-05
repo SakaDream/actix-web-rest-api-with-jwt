@@ -6,24 +6,24 @@ edition = "2018"
 
 [dependencies]
 actix-web = "2.0.0"
-actix-rt = "1.0.0"
+actix-rt = "1.1.1"
 actix-service = "1.0.5"
 actix-cors = "0.2.0"
 log = "0.4.8"
 env_logger = "0.7.1"
 diesel_migrations = "1.4.0"
-serde = "1.0.104"
-serde_derive = "1.0.104"
-serde_json = "1.0.48"
+serde = "1.0.111"
+serde_derive = "1.0.111"
+serde_json = "1.0.53"
 dotenv = "0.15.0"
-futures = "0.3.4"
-failure = "0.1.7"
-derive_more = "0.99.3"
+futures = "0.3.5"
+failure = "0.1.8"
+derive_more = "0.99.7"
 jsonwebtoken = "7.1.0"
-bcrypt = "0.6.2"
+bcrypt = "0.8.0"
 
 [dependencies.diesel]
-version = "1.4.3"
+version = "1.4.4"
 features = ["postgres", "r2d2", "chrono"]
 
 [dependencies.chrono]
