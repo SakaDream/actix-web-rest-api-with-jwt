@@ -1,6 +1,6 @@
 # Actix-web REST API with JWT
 
-![Cross-platform CICD](https://github.com/SakaDream/actix-web-rest-api-with-jwt/workflows/Cross-platform%20CICD/badge.svg)
+![CI](https://github.com/SakaDream/actix-web-rest-api-with-jwt/workflows/CI/badge.svg)
 ![Docker CICD](https://github.com/SakaDream/actix-web-rest-api-with-jwt/workflows/Docker%20CICD/badge.svg)
 
 A simple CRUD backend app using Actix-web, Diesel and JWT
