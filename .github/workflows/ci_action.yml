@@ -85,11 +85,6 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Download libpq.lib
-        run: |
-          New-Item -Path "." -Name "libs" -ItemType "directory"
-          Invoke-WebRequest -Uri https://sakadream.me/cloud/index.php/s/JXnJvyjifGBPuR2/download -OutFile libs\libpq.lib
-
       - name: Get temporary secret key
         shell: cmd
         run: ren src\secret.key.sample secret.key
@@ -127,7 +122,7 @@ jobs:
           command: check
           args: --release
         env:
-          RUSTFLAGS: -L D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs
+          RUSTFLAGS: -L D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs\windows
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
@@ -149,7 +144,7 @@ jobs:
           command: build
           args: --release
         env:
-          RUSTFLAGS: -L D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs
+          RUSTFLAGS: -L D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs\windows
 
   cicd-macos:
     name: CI macOS
