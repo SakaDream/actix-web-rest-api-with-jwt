@@ -1,10 +1,7 @@
 use crate::{
     config::db::Connection,
     constants,
-    models::{
-        login_history::LoginHistory,
-        user_token::UserToken,
-    },
+    models::{login_history::LoginHistory, user_token::UserToken},
     schema::users::{self, dsl::*},
 };
 use bcrypt::{hash, verify, DEFAULT_COST};
@@ -49,9 +46,7 @@ impl User {
                 password: hashed_pwd,
                 ..user
             };
-            diesel::insert_into(users)
-                .values(&user)
-                .execute(conn);
+            diesel::insert_into(users).values(&user).execute(conn);
             Ok(constants::MESSAGE_SIGNUP_SUCCESS.to_string())
         } else {
             Err(format!("User '{}' is already registered", &user.username))
@@ -59,24 +54,29 @@ impl User {
     }
 
     pub fn login(login: LoginDTO, conn: &Connection) -> Option<LoginInfoDTO> {
-        let user_to_verify = users
+        if let Ok(user_to_verify) = users
             .filter(username.eq(&login.username_or_email))
             .or_filter(email.eq(&login.username_or_email))
             .get_result::<User>(conn)
-            .unwrap();
-        if !user_to_verify.password.is_empty()
-            && verify(&login.password, &user_to_verify.password).unwrap()
         {
-            if let Some(login_history) = LoginHistory::create(&user_to_verify.username, conn) {
-                if LoginHistory::save_login_history(login_history, conn).is_err() {
-                    return None;
-                }
-                let login_session_str = User::generate_login_session();
-                if User::update_login_session_to_db(&user_to_verify.username, &login_session_str, conn) {
-                    return Some(LoginInfoDTO {
-                        username: user_to_verify.username,
-                        login_session: login_session_str,
-                    });
+            if !user_to_verify.password.is_empty()
+                && verify(&login.password, &user_to_verify.password).unwrap()
+            {
+                if let Some(login_history) = LoginHistory::create(&user_to_verify.username, conn) {
+                    if LoginHistory::save_login_history(login_history, conn).is_err() {
+                        return None;
+                    }
+                    let login_session_str = User::generate_login_session();
+                    if User::update_login_session_to_db(
+                        &user_to_verify.username,
+                        &login_session_str,
+                        conn,
+                    ) {
+                        return Some(LoginInfoDTO {
+                            username: user_to_verify.username,
+                            login_session: login_session_str,
+                        });
+                    }
                 }
             }
         }
@@ -106,7 +106,11 @@ impl User {
         Uuid::new_v4().to_simple().to_string()
     }
 
-    pub fn update_login_session_to_db(un: &str, login_session_str: &str, conn: &Connection) -> bool {
+    pub fn update_login_session_to_db(
+        un: &str,
+        login_session_str: &str,
+        conn: &Connection,
+    ) -> bool {
         if let Ok(user) = User::find_user_by_username(un, conn) {
             diesel::update(users.find(user.id))
                 .set(login_session.eq(login_session_str.to_string()))
