@@ -7,27 +7,27 @@ edition = "2018"
 [dependencies]
 actix-web = "2.0.0"
 actix-rt = "1.1.1"
-actix-service = "1.0.5"
+actix-service = "1.0.6"
 actix-cors = "0.2.0"
 log = "0.4.11"
 env_logger = "0.7.1"
 diesel_migrations = "1.4.0"
-serde = "1.0.114"
-serde_derive = "1.0.114"
-serde_json = "1.0.56"
+serde = "1.0.115"
+serde_derive = "1.0.115"
+serde_json = "1.0.57"
 dotenv = "0.15.0"
 futures = "0.3.5"
 failure = "0.1.8"
 derive_more = "0.99.9"
 jsonwebtoken = "7.2.0"
-bcrypt = "0.8.1"
+bcrypt = "0.8.2"
 
 [dependencies.diesel]
 version = "1.4.5"
 features = ["postgres", "r2d2", "chrono"]
 
 [dependencies.chrono]
-version = "0.4.13"
+version = "0.4.15"
 features = ["serde"]
 
 [dependencies.uuid]
