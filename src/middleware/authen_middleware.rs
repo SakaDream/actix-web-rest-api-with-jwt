@@ -1,9 +1,10 @@
 use crate::{config::db::Pool, constants, models::response::ResponseBody, utils::token_utils};
 use actix_service::{Service, Transform};
 use actix_web::{
-    http::{Method},
-    dev::{ServiceRequest, ServiceResponse},
     Error, HttpResponse,
+    dev::{ServiceRequest, ServiceResponse},
+    http::{Method, HeaderName, HeaderValue},
+    web::Data,
 };
 use futures::{
     future::{ok, Ready},
@@ -13,7 +14,6 @@ use std::{
     pin::Pin,
     task::{Context, Poll},
 };
-use actix_web::http::header::{HeaderName, HeaderValue};
 
 pub struct Authentication;
 
@@ -68,9 +68,9 @@ where
                 }
             }
             if !authenticate_pass {
-                if let Some(pool) = req.app_data::<Pool>() {
+                if let Some(pool) = req.app_data::<Data<Pool>>() {
                     info!("Connecting to database...");
-                    if let Some(authen_header) = req.headers_mut().get(constants::AUTHORIZATION) {
+                    if let Some(authen_header) = req.headers().get(constants::AUTHORIZATION) {
                         info!("Parsing authorization header...");
                         if let Ok(authen_str) = authen_header.to_str() {
                             if authen_str.starts_with("bearer") || authen_str.starts_with("Bearer") {
@@ -78,7 +78,7 @@ where
                                 let token = authen_str[6..authen_str.len()].trim();
                                 if let Ok(token_data) = token_utils::decode_token(token.to_string()) {
                                     info!("Decoding token...");
-                                    if token_utils::verify_token(&token_data, &pool).is_ok() {
+                                    if token_utils::verify_token(&token_data, pool).is_ok() {
                                         info!("Valid token");
                                         authenticate_pass = true;
                                     } else {
