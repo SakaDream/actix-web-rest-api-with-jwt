@@ -52,8 +52,6 @@ async fn main() -> io::Result<()> {
     let app_url = format!("{}:{}", &app_host, &app_port);
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL not found.");
 
-    let pool = config::db::migrate_and_config_db(&db_url);
-
     HttpServer::new(move || {
         App::new()
             .wrap(Cors::new() // allowed_origin return access-control-allow-origin: * by default
@@ -64,7 +62,7 @@ async fn main() -> io::Result<()> {
                 .allowed_header(http::header::CONTENT_TYPE)
                 .max_age(3600)
                 .finish())
-            .data(pool.clone())
+            .data(config::db::migrate_and_config_db(&db_url))
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
             .wrap_fn(|req, srv| {
