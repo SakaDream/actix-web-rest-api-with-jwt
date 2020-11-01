@@ -20,13 +20,13 @@ pub struct UserToken {
 }
 
 impl UserToken {
-    pub fn generate_token(login: LoginInfoDTO) -> String {
+    pub fn generate_token(login: &LoginInfoDTO) -> String {
         let now = Utc::now().timestamp_nanos() / 1_000_000_000; // nanosecond -> second
         let payload = UserToken {
             iat: now,
             exp: now + ONE_WEEK,
-            user: login.username,
-            login_session: login.login_session,
+            user: login.username.clone(),
+            login_session: login.login_session.clone(),
         };
 
         jsonwebtoken::encode(&Header::default(), &payload, &EncodingKey::from_secret(&KEY)).unwrap()

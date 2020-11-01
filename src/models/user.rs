@@ -78,6 +78,11 @@ impl User {
                         });
                     }
                 }
+            } else {
+                return Some(LoginInfoDTO {
+                    username: user_to_verify.username,
+                    login_session: String::new(),
+                });
             }
         }
 
