@@ -149,6 +149,8 @@ jobs:
         with:
           command: test
           args: -- --nocapture
+        env:
+          RUSTFLAGS: -L D:\a\actix-web-rest-api-with-jwt\actix-web-rest-api-with-jwt\libs\windows
 
       - name: Run cargo build
         uses: actions-rs/cargo@v1
