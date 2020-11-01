@@ -8,6 +8,7 @@ pub const MESSAGE_SIGNUP_SUCCESS: &str = "Signup successfully";
 // pub const MESSAGE_SIGNUP_FAILED: &str = "Error while signing up, please try again";
 pub const MESSAGE_LOGIN_SUCCESS: &str = "Login successfully";
 pub const MESSAGE_LOGIN_FAILED: &str = "Wrong username or password, please try again";
+pub const MESSAGE_USER_NOT_FOUND: &str = "User not found, please signup";
 pub const MESSAGE_LOGOUT_SUCCESS: &str = "Logout successfully";
 pub const MESSAGE_PROCESS_TOKEN_ERROR: &str = "Error while processing token";
 pub const MESSAGE_INVALID_TOKEN: &str = "Invalid token, please login again";
