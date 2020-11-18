@@ -64,7 +64,7 @@ jobs:
           mkdir app
           cp target/release/actix-web-rest-api-with-jwt app/actix-web-rest-api-with-jwt
           cp diesel.toml app/diesel.toml
-          cp docker/prod/Dockerfile app/Dockerfile
+          cp Dockerfile.prod app/Dockerfile
           cd app
           touch .env
           tar -czvf ../app.tar.gz .
