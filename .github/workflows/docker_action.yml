@@ -65,6 +65,7 @@ jobs:
           cp target/release/actix-web-rest-api-with-jwt app/actix-web-rest-api-with-jwt
           cp diesel.toml app/diesel.toml
           cp Dockerfile.github-action app/Dockerfile
+          cp wait-for-it.sh app/wait-for-it.sh
           cd app
           touch .env
           tar -czvf ../app.tar.gz .
