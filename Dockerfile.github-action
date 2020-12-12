@@ -1,0 +1,24 @@
+# NOTE: This Dockerfile is only used for GitHub Actions. For local development, please use 'Dockerfile.local'
+# base image
+FROM debian:buster-slim
+
+# create app directory
+RUN mkdir app
+WORKDIR /app
+
+# install libpq
+RUN apt-get update; \
+    apt-get install --no-install-recommends -y libpq5 libsqlite3-0; \
+    rm -rf /var/lib/apt/lists/*
+
+# copy binary and configuration files
+COPY ./actix-web-rest-api-with-jwt .
+COPY ./diesel.toml .
+COPY ./.env .
+COPY ./wait-for-it.sh .
+
+# expose port
+EXPOSE 8000
+
+# run the binary
+CMD ["./wait-for-it.sh", "db:5432", "--", "/app/actix-web-rest-api-with-jwt"]

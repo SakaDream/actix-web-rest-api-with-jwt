@@ -8,6 +8,8 @@ services:
     - "5432:5432"
     environment:
     - POSTGRES_PASSWORD=postgres
+    volumes: 
+    - pgdata:/var/lib/postgresql/data
   app:
     container_name: address_book_be
     image: sakadream/actix-web-rest-api-with-jwt
@@ -20,3 +22,5 @@ services:
     - DATABASE_URL=postgres://postgres:postgres@db/postgres
     depends_on:
     - db
+volumes:
+  pgdata:

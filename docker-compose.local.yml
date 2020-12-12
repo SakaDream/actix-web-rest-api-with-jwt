@@ -8,11 +8,13 @@ services:
     - "5432:5432"
     environment:
     - POSTGRES_PASSWORD=postgres
+    volumes: 
+    - pgdata:/var/lib/postgresql/data
   app:
     container_name: address_book_be
     build:
       context: .
-      dockerfile: docker/local/Dockerfile
+      dockerfile: Dockerfile.local
     restart: always
     ports:
     - "8000:8000"
@@ -22,3 +24,5 @@ services:
     - DATABASE_URL=postgres://postgres:postgres@db/postgres
     depends_on:
     - db
+volumes:
+  pgdata:

@@ -64,7 +64,8 @@ jobs:
           mkdir app
           cp target/release/actix-web-rest-api-with-jwt app/actix-web-rest-api-with-jwt
           cp diesel.toml app/diesel.toml
-          cp docker/prod/Dockerfile app/Dockerfile
+          cp Dockerfile.github-action app/Dockerfile
+          cp wait-for-it.sh app/wait-for-it.sh
           cd app
           touch .env
           tar -czvf ../app.tar.gz .
@@ -75,7 +76,6 @@ jobs:
         with:
           name: artifact-linux-docker
           path: app.tar.gz
-
 
   cicd-docker:
     name: CICD Docker
@@ -90,11 +90,39 @@ jobs:
       - name: Extract app archive
         run: tar -zxvf app.tar.gz
 
-      - name: Docker build and publish
-        uses: docker/build-push-action@v1
+      - name: Prepare
+        id: prep
+        run: |
+          DOCKER_IMAGE=sakadream/actix-web-rest-api-with-jwt
+          VERSION=edge
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          elif [[ $GITHUB_REF == refs/heads/* ]]; then
+            VERSION=$(echo ${GITHUB_REF#refs/heads/} | sed -r 's#/+#-#g')
+          elif [[ $GITHUB_REF == refs/pull/* ]]; then
+            VERSION=pr-${{ github.event.number }}
+          fi
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            TAGS="$TAGS,${DOCKER_IMAGE}:sha-${GITHUB_SHA::8}"
+          fi
+          echo ::set-output name=version::${VERSION}
+          echo ::set-output name=tags::${TAGS}
+          echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: sakadream/actix-web-rest-api-with-jwt
-          add_git_labels: true
-          tag_with_ref: true
+
+      - name: Docker build and publish
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          tags: ${{ steps.prep.outputs.tags }}
+          labels: |
+            org.opencontainers.image.source=${{ github.event.repository.html_url }}
+            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
+            org.opencontainers.image.revision=${{ github.sha }}
