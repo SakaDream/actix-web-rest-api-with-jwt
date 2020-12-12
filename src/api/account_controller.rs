@@ -48,12 +48,11 @@ mod tests {
     async fn test_signup_ok() {
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::new()
+            .wrap(Cors::default()
             .send_wildcard()
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
             .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600)
-            .finish())
+            .max_age(3600))
             .data(config::db::migrate_and_config_db(":memory:"))
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
@@ -80,12 +79,11 @@ mod tests {
     async fn test_signup_duplicate_user() {
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::new()
+            .wrap(Cors::default()
             .send_wildcard()
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
             .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600)
-            .finish())
+            .max_age(3600))
             .data(config::db::migrate_and_config_db(":memory:"))
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
@@ -119,12 +117,11 @@ mod tests {
     async fn test_login_ok_with_username() {
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::new()
+            .wrap(Cors::default()
             .send_wildcard()
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
             .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600)
-            .finish())
+            .max_age(3600))
             .data(config::db::migrate_and_config_db(":memory:"))
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
@@ -155,12 +152,11 @@ mod tests {
     async fn test_login_ok_with_email() {
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::new()
+            .wrap(Cors::default()
             .send_wildcard()
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
             .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600)
-            .finish())
+            .max_age(3600))
             .data(config::db::migrate_and_config_db(":memory:"))
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
@@ -191,12 +187,11 @@ mod tests {
     async fn test_login_password_incorrect_with_username() {
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::new()
+            .wrap(Cors::default()
             .send_wildcard()
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
             .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600)
-            .finish())
+            .max_age(3600))
             .data(config::db::migrate_and_config_db(":memory:"))
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
@@ -227,12 +222,11 @@ mod tests {
     async fn test_login_password_incorrect_with_email() {
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::new()
+            .wrap(Cors::default()
             .send_wildcard()
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
             .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600)
-            .finish())
+            .max_age(3600))
             .data(config::db::migrate_and_config_db(":memory:"))
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
@@ -263,12 +257,11 @@ mod tests {
     async fn test_login_user_not_found_with_username() {
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::new()
+            .wrap(Cors::default()
             .send_wildcard()
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
             .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600)
-            .finish())
+            .max_age(3600))
             .data(config::db::migrate_and_config_db(":memory:"))
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
@@ -299,12 +292,11 @@ mod tests {
     async fn test_login_user_not_found_with_email() {
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::new()
+            .wrap(Cors::default()
             .send_wildcard()
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
             .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600)
-            .finish())
+            .max_age(3600))
             .data(config::db::migrate_and_config_db(":memory:"))
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)

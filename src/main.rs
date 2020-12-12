@@ -54,14 +54,13 @@ async fn main() -> io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
-            .wrap(Cors::new() // allowed_origin return access-control-allow-origin: * by default
+            .wrap(Cors::default() // allowed_origin return access-control-allow-origin: * by default
                 // .allowed_origin("http://127.0.0.1:8080")
                 .send_wildcard()
                 .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
                 .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
                 .allowed_header(http::header::CONTENT_TYPE)
-                .max_age(3600)
-                .finish())
+                .max_age(3600))
             .data(config::db::migrate_and_config_db(&db_url))
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)

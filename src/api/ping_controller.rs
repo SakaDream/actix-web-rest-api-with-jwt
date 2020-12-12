@@ -18,12 +18,11 @@ mod tests {
     async fn test_ping_ok() {
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::new()
+            .wrap(Cors::default()
             .send_wildcard()
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
             .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600)
-            .finish())
+            .max_age(3600))
             .data(config::db::migrate_and_config_db(":memory:"))
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::authen_middleware::Authentication)
