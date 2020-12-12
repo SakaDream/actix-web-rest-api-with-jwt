@@ -1,7 +1,7 @@
 # build stage
 FROM rust:slim as build
 
-# install libpq and create new empty binary project
+# install libpq, libsqlite and create new empty binary project
 RUN apt-get update; \
     apt-get install --no-install-recommends -y libpq-dev libsqlite3-dev; \
     rm -rf /var/lib/apt/lists/*; \
@@ -35,7 +35,7 @@ FROM debian:buster-slim
 RUN mkdir app
 WORKDIR /app
 
-# install libpq
+# install libpq and libsqlite
 RUN apt-get update; \
     apt-get install --no-install-recommends -y libpq5 libsqlite3-0; \
     rm -rf /var/lib/apt/lists/*
@@ -44,9 +44,10 @@ RUN apt-get update; \
 COPY --from=build /app/target/debug/actix-web-rest-api-with-jwt .
 COPY --from=build /app/.env .
 COPY --from=build /app/diesel.toml .
+COPY wait-for-it.sh .
 
 # expose port
 EXPOSE 8000
 
 # run the binary
-ENTRYPOINT ["/app/actix-web-rest-api-with-jwt"]
+CMD ["./wait-for-it.sh", "db:5432", "--", "/app/actix-web-rest-api-with-jwt"]
