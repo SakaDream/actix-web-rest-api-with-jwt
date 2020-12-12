@@ -1,3 +1,4 @@
+# NOTE: This Dockerfile is only used for GitHub Actions. For local development, please use 'Dockerfile.local'
 # base image
 FROM debian:buster-slim
 
@@ -14,7 +15,7 @@ RUN apt-get update; \
 COPY ./actix-web-rest-api-with-jwt .
 COPY ./diesel.toml .
 COPY ./.env .
-COPY wait-for-it.sh .
+COPY ./wait-for-it.sh .
 
 # expose port
 EXPOSE 8000

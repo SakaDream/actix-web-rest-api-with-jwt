@@ -44,7 +44,7 @@ RUN apt-get update; \
 COPY --from=build /app/target/debug/actix-web-rest-api-with-jwt .
 COPY --from=build /app/.env .
 COPY --from=build /app/diesel.toml .
-COPY wait-for-it.sh .
+COPY ./wait-for-it.sh .
 
 # expose port
 EXPOSE 8000
