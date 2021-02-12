@@ -24,5 +24,6 @@ Cargo.lock
 # Extras
 .env
 /src/secret.key
+/act/
 
 # End of https://www.gitignore.io/api/rust,code
