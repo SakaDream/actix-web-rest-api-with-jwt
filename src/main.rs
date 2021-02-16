@@ -125,7 +125,7 @@ mod tests {
                 })
                 .configure(config::app::config_services)
             })
-        .bind("localhost:8000".to_string()).unwrap()
+        .bind("localhost:8001".to_string()).unwrap()
         .run();
 
         assert_eq!(true, true);
