@@ -73,3 +73,61 @@ async fn main() -> io::Result<()> {
     .run()
     .await
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::config;
+    use actix_web::{http, HttpServer, App};
+    use futures::FutureExt;
+    use actix_service::Service;
+    use actix_cors::Cors;
+
+    #[actix_rt::test]
+    async fn test_startup_ok() {
+        HttpServer::new(move || {
+            App::new()
+                .wrap(Cors::default() // allowed_origin return access-control-allow-origin: * by default
+                    // .allowed_origin("http://127.0.0.1:8080")
+                    .send_wildcard()
+                    .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                    .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+                    .allowed_header(http::header::CONTENT_TYPE)
+                    .max_age(3600))
+                    .data(config::db::migrate_and_config_db(":memory:"))
+                .wrap(actix_web::middleware::Logger::default())
+                .wrap(crate::middleware::authen_middleware::Authentication)
+                .wrap_fn(|req, srv| {
+                    srv.call(req).map(|res| res)
+                })
+                .configure(config::app::config_services)
+            })
+        .bind("localhost:8000".to_string()).unwrap()
+        .run();
+
+        assert_eq!(true, true);
+    }
+
+    #[actix_rt::test]
+    async fn test_startup_without_auth_middleware_ok() {
+        HttpServer::new(move || {
+            App::new()
+                .wrap(Cors::default() // allowed_origin return access-control-allow-origin: * by default
+                    // .allowed_origin("http://127.0.0.1:8080")
+                    .send_wildcard()
+                    .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                    .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+                    .allowed_header(http::header::CONTENT_TYPE)
+                    .max_age(3600))
+                    .data(config::db::migrate_and_config_db(":memory:"))
+                .wrap(actix_web::middleware::Logger::default())
+                .wrap_fn(|req, srv| {
+                    srv.call(req).map(|res| res)
+                })
+                .configure(config::app::config_services)
+            })
+        .bind("localhost:8000".to_string()).unwrap()
+        .run();
+
+        assert_eq!(true, true);
+    }
+}
