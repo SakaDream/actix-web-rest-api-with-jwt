@@ -18,7 +18,7 @@ pub type Pool = r2d2::Pool<ConnectionManager<Connection>>;
 
 #[cfg(not(test))]
 pub fn migrate_and_config_db(url: &str) -> Pool {
-    info!("Migrating and configurating database..."); 
+    info!("Migrating and configuring database..."); 
     let manager = ConnectionManager::<Connection>::new(url);
     let pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
     embedded_migrations::run(&pool.get().expect("Failed to migrate."));
@@ -29,7 +29,7 @@ pub fn migrate_and_config_db(url: &str) -> Pool {
 #[cfg(test)]
 pub fn migrate_and_config_db(url: &str) -> Pool {
     use crate::diesel::RunQueryDsl;
-    info!("Migrating and configurating database..."); 
+    info!("Migrating and configuring database..."); 
     let manager = ConnectionManager::<Connection>::new(url);
     let pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
     
