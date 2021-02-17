@@ -46,16 +46,18 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_signup_ok() {
+        let pool = config::db::migrate_and_config_db(":memory:");
+
         let mut app = test::init_service(
             App::new()
             .wrap(Cors::default()
-            .send_wildcard()
-            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-            .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600))
-            .data(config::db::migrate_and_config_db(":memory:"))
+                .send_wildcard()
+                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                .allowed_header(http::header::CONTENT_TYPE)
+                .max_age(3600))
+            .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::authen_middleware::Authentication)
+            .wrap(crate::middleware::auth_middleware::Authentication)
             .wrap_fn(|req, srv| {
                 srv.call(req).map(|res| res)
             })
@@ -77,16 +79,18 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_signup_duplicate_user() {
+        let pool = config::db::migrate_and_config_db(":memory:");
+
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::default()
-            .send_wildcard()
-            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-            .allowed_header(http::header::CONTENT_TYPE)
+                .wrap(Cors::default()
+                .send_wildcard()
+                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                .allowed_header(http::header::CONTENT_TYPE)
             .max_age(3600))
-            .data(config::db::migrate_and_config_db(":memory:"))
+            .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::authen_middleware::Authentication)
+            .wrap(crate::middleware::auth_middleware::Authentication)
             .wrap_fn(|req, srv| {
                 srv.call(req).map(|res| res)
             })
@@ -115,16 +119,18 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_login_ok_with_username() {
+        let pool = config::db::migrate_and_config_db(":memory:");
+
         let mut app = test::init_service(
             App::new()
             .wrap(Cors::default()
-            .send_wildcard()
-            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-            .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600))
-            .data(config::db::migrate_and_config_db(":memory:"))
+                .send_wildcard()
+                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                .allowed_header(http::header::CONTENT_TYPE)
+                .max_age(3600))
+            .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::authen_middleware::Authentication)
+            .wrap(crate::middleware::auth_middleware::Authentication)
             .wrap_fn(|req, srv| {
                 srv.call(req).map(|res| res)
             })
@@ -150,16 +156,18 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_login_ok_with_email() {
+        let pool = config::db::migrate_and_config_db(":memory:");
+
         let mut app = test::init_service(
             App::new()
             .wrap(Cors::default()
-            .send_wildcard()
-            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-            .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600))
-            .data(config::db::migrate_and_config_db(":memory:"))
+                .send_wildcard()
+                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                .allowed_header(http::header::CONTENT_TYPE)
+                .max_age(3600))
+            .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::authen_middleware::Authentication)
+            .wrap(crate::middleware::auth_middleware::Authentication)
             .wrap_fn(|req, srv| {
                 srv.call(req).map(|res| res)
             })
@@ -185,16 +193,18 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_login_password_incorrect_with_username() {
+        let pool = config::db::migrate_and_config_db(":memory:");
+
         let mut app = test::init_service(
             App::new()
             .wrap(Cors::default()
-            .send_wildcard()
-            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-            .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600))
-            .data(config::db::migrate_and_config_db(":memory:"))
+                .send_wildcard()
+                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                .allowed_header(http::header::CONTENT_TYPE)
+                .max_age(3600))
+            .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::authen_middleware::Authentication)
+            .wrap(crate::middleware::auth_middleware::Authentication)
             .wrap_fn(|req, srv| {
                 srv.call(req).map(|res| res)
             })
@@ -220,16 +230,18 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_login_password_incorrect_with_email() {
+        let pool = config::db::migrate_and_config_db(":memory:");
+
         let mut app = test::init_service(
             App::new()
             .wrap(Cors::default()
-            .send_wildcard()
-            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-            .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600))
-            .data(config::db::migrate_and_config_db(":memory:"))
+                .send_wildcard()
+                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                .allowed_header(http::header::CONTENT_TYPE)
+                .max_age(3600))
+            .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::authen_middleware::Authentication)
+            .wrap(crate::middleware::auth_middleware::Authentication)
             .wrap_fn(|req, srv| {
                 srv.call(req).map(|res| res)
             })
@@ -255,16 +267,18 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_login_user_not_found_with_username() {
+        let pool = config::db::migrate_and_config_db(":memory:");
+
         let mut app = test::init_service(
             App::new()
             .wrap(Cors::default()
-            .send_wildcard()
-            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-            .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600))
-            .data(config::db::migrate_and_config_db(":memory:"))
+                .send_wildcard()
+                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                .allowed_header(http::header::CONTENT_TYPE)
+                .max_age(3600))
+            .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::authen_middleware::Authentication)
+            .wrap(crate::middleware::auth_middleware::Authentication)
             .wrap_fn(|req, srv| {
                 srv.call(req).map(|res| res)
             })
@@ -290,16 +304,18 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_login_user_not_found_with_email() {
+        let pool = config::db::migrate_and_config_db(":memory:");
+
         let mut app = test::init_service(
             App::new()
             .wrap(Cors::default()
-            .send_wildcard()
-            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-            .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600))
-            .data(config::db::migrate_and_config_db(":memory:"))
+                .send_wildcard()
+                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                .allowed_header(http::header::CONTENT_TYPE)
+                .max_age(3600))
+            .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::authen_middleware::Authentication)
+            .wrap(crate::middleware::auth_middleware::Authentication)
             .wrap_fn(|req, srv| {
                 srv.call(req).map(|res| res)
             })
