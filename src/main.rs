@@ -57,7 +57,8 @@ async fn main() -> io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .wrap(Cors::default() // allowed_origin return access-control-allow-origin: * by default
-                // .allowed_origin("http://127.0.0.1:8080")
+            .allowed_origin("http://127.0.0.1:3000")
+            .allowed_origin("http://localhost:3000")
                 .send_wildcard()
                 .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
                 .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
@@ -65,6 +66,7 @@ async fn main() -> io::Result<()> {
                 .max_age(3600))
             .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
+            // If you want to use yew-address-book-frontend, please comment an auth_middleware wrapping code
             .wrap(crate::middleware::auth_middleware::Authentication)
             .wrap_fn(|req, srv| {
                 srv.call(req).map(|res| res)
