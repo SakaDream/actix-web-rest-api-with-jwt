@@ -66,7 +66,7 @@ async fn main() -> io::Result<()> {
                 .max_age(3600))
             .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
-            // If you want to use yew-address-book-frontend, please comment an auth_middleware wrapping code
+            // If you want to use yew-address-book-frontend, please comment auth_middleware wrapping code
             .wrap(crate::middleware::auth_middleware::Authentication)
             .wrap_fn(|req, srv| {
                 srv.call(req).map(|res| res)
