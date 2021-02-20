@@ -31,6 +31,11 @@ Or using [Docker](https://www.docker.com/)
 - Run `docker-compose -f docker-compose.local.yml up` for local environment or `docker-compose -f docker-compose.prod.yml up` for production environment
 - Enjoy! 😄
 
+### Note for yew-address-book-client
+- I also made yew-address-book-client, an Address Book Frontend using yew.rs. yew-address-book-client is heavily under in development, currently the web client does not have login/signup page, so if you want to integrate with backend-side, comment this line bellow in `main.rs` to disable authentication middleware
+https://github.com/SakaDream/actix-web-rest-api-with-jwt/blob/636d6e548f60d341c05707a0e5d3f4e1ee02e60a/src/main.rs#L70
+
+
 ## APIs
 
 ### Address: **`localhost:8000`**
