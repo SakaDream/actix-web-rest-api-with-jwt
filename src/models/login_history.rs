@@ -35,7 +35,10 @@ impl LoginHistory {
         }
     }
 
-    pub fn save_login_history(insert_record: LoginHistoryInsertableDTO, conn: &Connection) -> QueryResult<usize> {
+    pub fn save_login_history(
+        insert_record: LoginHistoryInsertableDTO,
+        conn: &Connection,
+    ) -> QueryResult<usize> {
         diesel::insert_into(login_history)
             .values(&insert_record)
             .execute(conn)

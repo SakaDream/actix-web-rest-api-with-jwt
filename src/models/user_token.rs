@@ -1,9 +1,6 @@
 use crate::models::user::LoginInfoDTO;
 use chrono::Utc;
-use jsonwebtoken::{
-    EncodingKey,
-    Header
-};
+use jsonwebtoken::{EncodingKey, Header};
 
 pub static KEY: [u8; 16] = *include_bytes!("../secret.key");
 static ONE_WEEK: i64 = 60 * 60 * 24 * 7; // in seconds
@@ -29,6 +26,11 @@ impl UserToken {
             login_session: login.login_session.clone(),
         };
 
-        jsonwebtoken::encode(&Header::default(), &payload, &EncodingKey::from_secret(&KEY)).unwrap()
+        jsonwebtoken::encode(
+            &Header::default(),
+            &payload,
+            &EncodingKey::from_secret(&KEY),
+        )
+        .unwrap()
     }
 }

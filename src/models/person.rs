@@ -1,8 +1,11 @@
 use crate::{
     config::db::Connection,
-    schema::people::{self, dsl::*}
+    models::pagination::Paginate,
+    schema::people::{self, dsl::*},
 };
 use diesel::prelude::*;
+
+use super::{Page, PersonFilter};
 
 #[derive(Queryable, Serialize, Deserialize)]
 pub struct Person {
@@ -91,6 +94,56 @@ impl Person {
                 .filter(name.like(&pattern))
                 .or_filter(address.like(&pattern))
                 .load::<Person>(conn)
+        }
+    }
+
+    pub fn filter(filter: PersonFilter, conn: &Connection) -> QueryResult<Page<Person>> {
+        let mut query = people::table.into_boxed();
+
+        query = query.order(id.asc());
+        if let Some(i) = filter.address {
+            query = query.filter(address.like(format!("%{}%", i)));
+        }
+        if let Some(i) = filter.age {
+            query = query.filter(age.eq(i));
+        }
+        if let Some(i) = filter.email {
+            query = query.filter(email.like(format!("%{}%", i)));
+        }
+        if let Some(i) = filter.gender {
+            match i.to_lowercase().as_str() {
+                "male" => {
+                    query = query.filter(gender.eq(true));
+                }
+                "female" => {
+                    query = query.filter(gender.eq(false));
+                }
+                _ => {}
+            }
+        }
+        if let Some(i) = filter.name {
+            query = query.filter(name.like(format!("%{}%", i)));
+        }
+        if let Some(i) = filter.phone {
+            query = query.filter(phone.like(format!("%{}%", i)));
+        }
+        match filter.page_num {
+            Some(pn) => match filter.page_size {
+                Some(ps) => query
+                    .paginate(pn)
+                    .per_page(ps)
+                    .load_and_count_items::<Person>(conn),
+                None => query.paginate(pn).load_and_count_items::<Person>(conn),
+            },
+            None => match filter.page_size {
+                Some(ps) => query
+                    .paginate(crate::constants::DEFAULT_PAGE_NUM)
+                    .per_page(ps)
+                    .load_and_count_items::<Person>(conn),
+                None => query
+                    .paginate(crate::constants::DEFAULT_PAGE_NUM)
+                    .load_and_count_items::<Person>(conn),
+            },
         }
     }
 
