@@ -183,32 +183,45 @@ curl -X GET -H 'Content-Type: application/json' \
     }
     ```
 
-### `GET /api/address-book/{query}`: Search for person information by keyword
+### `GET /api/address-book/filter`: Filter person information
 ```bash
 curl -X GET -H 'Content-Type: application/json' \
   -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
-  -i 'http://127.0.0.1:8000/api/address-book/user'
+  -i 'http://127.0.0.1:8000/api/address-book/filter?name=foo&sort_by=name&sort_direction=asc&page_num=0&page_size=10'
 ```
-  - Param path:
-    - query: string
+  - Query param:
+    - id: int32
+    - name: string
+    - gender: boolean
+    - age: int32
+    - address: String
+    - phone: string
+    - email: string
+    - sort_by: string
+    - sort_direction: string (ASC or DESC)
+    - page_num: int32
+    - page_size: int32
   - Header:
     - Authorization: bearer \<token\>
   - Response
     - 200 OK
     ```
     {
-       "message": "ok",
-       "data": [
-         {
-           "id": int32,
-           "name": string,
-           "gender": boolean,      // true for male, false for female
-           "age": int32,
-           "address": string,
-           "phone": string,
-           "email": string
-         }
-       ]
+      "message": "ok",
+      "data": [
+        {
+          "id": int32,
+          "name": string,
+          "gender": boolean,      // true for male, false for female
+          "age": int32,
+          "address": string,
+          "phone": string,
+          "email": string
+        }
+      ],
+      "page_num": int32,
+      "page_size": int32,
+      "total_elements": int32
     }
     ```
 
@@ -328,7 +341,7 @@ curl -X DELETE -H 'Content-Type: application/json' \
     }
     ```
 
-### brower OPTIONS curl request example
+### browser OPTIONS curl request example
 ```bash
 curl -X OPTIONS -i 'http://127.0.0.1:8000/api/login' \
   -H "Origin: http://example.com" -H "Access-Control-Request-Method: POST"

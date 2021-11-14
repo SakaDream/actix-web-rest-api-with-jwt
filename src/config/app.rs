@@ -32,10 +32,6 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
                             .route(web::delete().to(address_book_controller::delete)),
                     )
                     .service(
-                        web::resource("/query/{query}")
-                            .route(web::get().to(address_book_controller::query)),
-                    )
-                    .service(
                         web::resource("/filter")
                             .route(web::get().to(address_book_controller::filter)),
                     ),

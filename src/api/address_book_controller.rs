@@ -1,7 +1,7 @@
 use crate::{
     config::db::Pool,
     constants,
-    models::{person::PersonDTO, response::ResponseBody, PersonFilter},
+    models::{filters::PersonFilter, person::PersonDTO, response::ResponseBody},
     services::address_book_service,
 };
 use actix_web::{web, HttpResponse, Result};
@@ -22,21 +22,13 @@ pub async fn find_by_id(id: web::Path<i32>, pool: web::Data<Pool>) -> Result<Htt
     }
 }
 
-// GET api/address-book/query/{query}
-pub async fn query(query: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse> {
-    match address_book_service::query(query.into_inner(), &pool) {
-        Ok(people) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, people))),
-        Err(err) => Ok(err.response()),
-    }
-}
-
 // GET api/address-book/filter
 pub async fn filter(
     web::Query(filter): web::Query<PersonFilter>,
     pool: web::Data<Pool>,
 ) -> Result<HttpResponse> {
     match address_book_service::filter(filter, &pool) {
-        Ok(people) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, people))),
+        Ok(page) => Ok(HttpResponse::Ok().json(page)),
         Err(err) => Ok(err.response()),
     }
 }

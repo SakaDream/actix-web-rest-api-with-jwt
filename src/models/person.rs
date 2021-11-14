@@ -1,11 +1,11 @@
 use crate::{
     config::db::Connection,
-    models::pagination::Paginate,
+    models::pagination::SortingAndPaging,
     schema::people::{self, dsl::*},
 };
 use diesel::prelude::*;
 
-use super::{Page, PersonFilter};
+use super::{filters::PersonFilter, response::Page};
 
 #[derive(Queryable, Serialize, Deserialize)]
 pub struct Person {
@@ -38,72 +38,9 @@ impl Person {
         people.find(i).get_result::<Person>(conn)
     }
 
-    pub fn query(query: String, conn: &Connection) -> QueryResult<Vec<Person>> {
-        let pattern = format!("%{}%", query);
-        let mut id_and_age_query: i32 = 0;
-        let mut id_and_age_query_flag = false;
-        if query.as_str().parse::<i32>().is_ok() {
-            id_and_age_query_flag = true;
-            id_and_age_query = query.as_str().parse::<i32>().unwrap();
-        }
-
-        let gender_query;
-        let gender_query_flag;
-        match query.to_lowercase().as_str() {
-            "male" => {
-                gender_query = true;
-                gender_query_flag = true;
-            }
-            "female" => {
-                gender_query = false;
-                gender_query_flag = true;
-            }
-            _ => {
-                gender_query = false;
-                gender_query_flag = false;
-            }
-        }
-
-        if id_and_age_query_flag && gender_query_flag {
-            people
-                .order(id.asc())
-                .filter(id.eq(&id_and_age_query))
-                .or_filter(name.like(&pattern))
-                .or_filter(gender.eq(&gender_query))
-                .or_filter(age.eq(&id_and_age_query))
-                .or_filter(address.like(&pattern))
-                .load::<Person>(conn)
-        } else if id_and_age_query_flag && !gender_query_flag {
-            people
-                .order(id.asc())
-                .filter(id.eq(&id_and_age_query))
-                .or_filter(name.like(&pattern))
-                .or_filter(age.eq(&id_and_age_query))
-                .or_filter(address.like(&pattern))
-                .load::<Person>(conn)
-        } else if !id_and_age_query_flag && gender_query_flag {
-            people
-                .order(id.asc())
-                .filter(name.like(&pattern))
-                .or_filter(gender.eq(&gender_query))
-                .or_filter(address.like(&pattern))
-                .load::<Person>(conn)
-        } else {
-            people
-                .order(id.asc())
-                .filter(name.like(&pattern))
-                .or_filter(address.like(&pattern))
-                .load::<Person>(conn)
-        }
-    }
-
     pub fn filter(filter: PersonFilter, conn: &Connection) -> QueryResult<Page<Person>> {
         let mut query = people::table.into_boxed();
 
-        query = query.order(id.asc());
-        if let Some(i) = filter.address {
-            query = query.filter(address.like(format!("%{}%", i)));
-        }
         if let Some(i) = filter.age {
             query = query.filter(age.eq(i));
         }
@@ -127,24 +64,27 @@ impl Person {
         if let Some(i) = filter.phone {
             query = query.filter(phone.like(format!("%{}%", i)));
         }
-        match filter.page_num {
-            Some(pn) => match filter.page_size {
-                Some(ps) => query
-                    .paginate(pn)
-                    .per_page(ps)
-                    .load_and_count_items::<Person>(conn),
-                None => query.paginate(pn).load_and_count_items::<Person>(conn),
-            },
-            None => match filter.page_size {
-                Some(ps) => query
-                    .paginate(crate::constants::DEFAULT_PAGE_NUM)
-                    .per_page(ps)
-                    .load_and_count_items::<Person>(conn),
-                None => query
-                    .paginate(crate::constants::DEFAULT_PAGE_NUM)
-                    .load_and_count_items::<Person>(conn),
-            },
-        }
+
+        query
+            .paginate(
+                filter
+                    .page_num
+                    .unwrap_or(crate::constants::DEFAULT_PAGE_NUM),
+            )
+            .per_page(
+                filter
+                    .page_size
+                    .unwrap_or(crate::constants::DEFAULT_PER_PAGE),
+            )
+            .sort(
+                filter
+                    .sort_by
+                    .unwrap_or(crate::constants::EMPTY_STR.to_string()),
+                filter
+                    .sort_direction
+                    .unwrap_or(crate::constants::EMPTY_STR.to_string()),
+            )
+            .load_and_count_items::<Person>(conn)
     }
 
     pub fn insert(new_person: PersonDTO, conn: &Connection) -> QueryResult<usize> {

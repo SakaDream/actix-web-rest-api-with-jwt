@@ -31,3 +31,5 @@ pub const DEFAULT_PER_PAGE: i64 = 10;
 
 // Default page number
 pub const DEFAULT_PAGE_NUM: i64 = 1;
+
+pub const EMPTY_STR: &str = "";

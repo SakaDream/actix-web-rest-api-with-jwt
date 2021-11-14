@@ -3,8 +3,9 @@ use crate::{
     constants,
     error::ServiceError,
     models::{
+        filters::PersonFilter,
         person::{Person, PersonDTO},
-        Page, PersonFilter,
+        response::Page,
     },
 };
 use actix_web::{http::StatusCode, web};
@@ -25,16 +26,6 @@ pub fn find_by_id(id: i32, pool: &web::Data<Pool>) -> Result<Person, ServiceErro
         Err(_) => Err(ServiceError::new(
             StatusCode::NOT_FOUND,
             format!("Person with id {} not found", id),
-        )),
-    }
-}
-
-pub fn query(query: String, pool: &web::Data<Pool>) -> Result<Vec<Person>, ServiceError> {
-    match Person::query(query, &pool.get().unwrap()) {
-        Ok(people) => Ok(people),
-        Err(_) => Err(ServiceError::new(
-            StatusCode::INTERNAL_SERVER_ERROR,
-            constants::MESSAGE_CAN_NOT_FETCH_DATA.to_string(),
         )),
     }
 }
