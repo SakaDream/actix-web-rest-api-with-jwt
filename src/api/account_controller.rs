@@ -2,8 +2,8 @@ use crate::{
     config::db::Pool,
     constants,
     models::{
-        user::{LoginDTO, UserDTO},
         response::ResponseBody,
+        user::{LoginDTO, UserDTO},
     },
     services::account_service,
 };
@@ -20,7 +20,10 @@ pub async fn signup(user_dto: web::Json<UserDTO>, pool: web::Data<Pool>) -> Resu
 // POST api/auth/login
 pub async fn login(login_dto: web::Json<LoginDTO>, pool: web::Data<Pool>) -> Result<HttpResponse> {
     match account_service::login(login_dto.0, &pool) {
-        Ok(token_res) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_LOGIN_SUCCESS, token_res))),
+        Ok(token_res) => Ok(HttpResponse::Ok().json(ResponseBody::new(
+            constants::MESSAGE_LOGIN_SUCCESS,
+            token_res,
+        ))),
         Err(err) => Ok(err.response()),
     }
 }
@@ -29,18 +32,24 @@ pub async fn login(login_dto: web::Json<LoginDTO>, pool: web::Data<Pool>) -> Res
 pub async fn logout(req: HttpRequest, pool: web::Data<Pool>) -> Result<HttpResponse> {
     if let Some(authen_header) = req.headers().get(constants::AUTHORIZATION) {
         account_service::logout(authen_header, &pool);
-        Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_LOGOUT_SUCCESS, constants::EMPTY)))
+        Ok(HttpResponse::Ok().json(ResponseBody::new(
+            constants::MESSAGE_LOGOUT_SUCCESS,
+            constants::EMPTY,
+        )))
     } else {
-        Ok(HttpResponse::BadRequest().json(ResponseBody::new(constants::MESSAGE_TOKEN_MISSING, constants::EMPTY)))
+        Ok(HttpResponse::BadRequest().json(ResponseBody::new(
+            constants::MESSAGE_TOKEN_MISSING,
+            constants::EMPTY,
+        )))
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{App, config};
+    use crate::{config, App};
     use actix_cors::Cors;
     use actix_service::Service;
-    use actix_web::{test, http, http::StatusCode};
+    use actix_web::{http, http::StatusCode, test};
     use futures::FutureExt;
     use http::header;
 
@@ -50,24 +59,27 @@ mod tests {
 
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::default()
-                .send_wildcard()
-                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-                .allowed_header(http::header::CONTENT_TYPE)
-                .max_age(3600))
-            .data(pool.clone())
-            .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::auth_middleware::Authentication)
-            .wrap_fn(|req, srv| {
-                srv.call(req).map(|res| res)
-            })
-            .configure(crate::config::app::config_services)
-        ).await;
+                .wrap(
+                    Cors::default()
+                        .send_wildcard()
+                        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                        .allowed_header(http::header::CONTENT_TYPE)
+                        .max_age(3600),
+                )
+                .data(pool.clone())
+                .wrap(actix_web::middleware::Logger::default())
+                .wrap(crate::middleware::auth_middleware::Authentication)
+                .wrap_fn(|req, srv| srv.call(req).map(|res| res))
+                .configure(crate::config::app::config_services),
+        )
+        .await;
 
         let resp = test::TestRequest::post()
             .uri("/api/auth/signup")
             .set(header::ContentType::json())
-            .set_payload(r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes())
+            .set_payload(
+                r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes(),
+            )
             .send_request(&mut app)
             .await;
 
@@ -83,31 +95,36 @@ mod tests {
 
         let mut app = test::init_service(
             App::new()
-                .wrap(Cors::default()
-                .send_wildcard()
-                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-                .allowed_header(http::header::CONTENT_TYPE)
-            .max_age(3600))
-            .data(pool.clone())
-            .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::auth_middleware::Authentication)
-            .wrap_fn(|req, srv| {
-                srv.call(req).map(|res| res)
-            })
-            .configure(crate::config::app::config_services)
-        ).await;
+                .wrap(
+                    Cors::default()
+                        .send_wildcard()
+                        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                        .allowed_header(http::header::CONTENT_TYPE)
+                        .max_age(3600),
+                )
+                .data(pool.clone())
+                .wrap(actix_web::middleware::Logger::default())
+                .wrap(crate::middleware::auth_middleware::Authentication)
+                .wrap_fn(|req, srv| srv.call(req).map(|res| res))
+                .configure(crate::config::app::config_services),
+        )
+        .await;
 
         test::TestRequest::post()
             .uri("/api/auth/signup")
             .set(header::ContentType::json())
-            .set_payload(r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes())
+            .set_payload(
+                r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes(),
+            )
             .send_request(&mut app)
             .await;
 
         let resp = test::TestRequest::post()
             .uri("/api/auth/signup")
             .set(header::ContentType::json())
-            .set_payload(r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes())
+            .set_payload(
+                r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes(),
+            )
             .send_request(&mut app)
             .await;
 
@@ -123,24 +140,27 @@ mod tests {
 
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::default()
-                .send_wildcard()
-                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-                .allowed_header(http::header::CONTENT_TYPE)
-                .max_age(3600))
-            .data(pool.clone())
-            .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::auth_middleware::Authentication)
-            .wrap_fn(|req, srv| {
-                srv.call(req).map(|res| res)
-            })
-            .configure(crate::config::app::config_services)
-        ).await;
+                .wrap(
+                    Cors::default()
+                        .send_wildcard()
+                        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                        .allowed_header(http::header::CONTENT_TYPE)
+                        .max_age(3600),
+                )
+                .data(pool.clone())
+                .wrap(actix_web::middleware::Logger::default())
+                .wrap(crate::middleware::auth_middleware::Authentication)
+                .wrap_fn(|req, srv| srv.call(req).map(|res| res))
+                .configure(crate::config::app::config_services),
+        )
+        .await;
 
         test::TestRequest::post()
             .uri("/api/auth/signup")
             .set(header::ContentType::json())
-            .set_payload(r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes())
+            .set_payload(
+                r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes(),
+            )
             .send_request(&mut app)
             .await;
 
@@ -150,7 +170,7 @@ mod tests {
             .set_payload(r#"{"username_or_email":"admin","password":"123456"}"#.as_bytes())
             .send_request(&mut app)
             .await;
-        
+
         assert_eq!(resp.status(), StatusCode::OK);
     }
 
@@ -160,34 +180,39 @@ mod tests {
 
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::default()
-                .send_wildcard()
-                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-                .allowed_header(http::header::CONTENT_TYPE)
-                .max_age(3600))
-            .data(pool.clone())
-            .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::auth_middleware::Authentication)
-            .wrap_fn(|req, srv| {
-                srv.call(req).map(|res| res)
-            })
-            .configure(crate::config::app::config_services)
-        ).await;
+                .wrap(
+                    Cors::default()
+                        .send_wildcard()
+                        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                        .allowed_header(http::header::CONTENT_TYPE)
+                        .max_age(3600),
+                )
+                .data(pool.clone())
+                .wrap(actix_web::middleware::Logger::default())
+                .wrap(crate::middleware::auth_middleware::Authentication)
+                .wrap_fn(|req, srv| srv.call(req).map(|res| res))
+                .configure(crate::config::app::config_services),
+        )
+        .await;
 
         test::TestRequest::post()
             .uri("/api/auth/signup")
             .set(header::ContentType::json())
-            .set_payload(r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes())
+            .set_payload(
+                r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes(),
+            )
             .send_request(&mut app)
             .await;
 
         let resp = test::TestRequest::post()
             .uri("/api/auth/login")
             .set(header::ContentType::json())
-            .set_payload(r#"{"username_or_email":"admin@gmail.com","password":"123456"}"#.as_bytes())
+            .set_payload(
+                r#"{"username_or_email":"admin@gmail.com","password":"123456"}"#.as_bytes(),
+            )
             .send_request(&mut app)
             .await;
-        
+
         assert_eq!(resp.status(), StatusCode::OK);
     }
 
@@ -197,24 +222,27 @@ mod tests {
 
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::default()
-                .send_wildcard()
-                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-                .allowed_header(http::header::CONTENT_TYPE)
-                .max_age(3600))
-            .data(pool.clone())
-            .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::auth_middleware::Authentication)
-            .wrap_fn(|req, srv| {
-                srv.call(req).map(|res| res)
-            })
-            .configure(crate::config::app::config_services)
-        ).await;
+                .wrap(
+                    Cors::default()
+                        .send_wildcard()
+                        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                        .allowed_header(http::header::CONTENT_TYPE)
+                        .max_age(3600),
+                )
+                .data(pool.clone())
+                .wrap(actix_web::middleware::Logger::default())
+                .wrap(crate::middleware::auth_middleware::Authentication)
+                .wrap_fn(|req, srv| srv.call(req).map(|res| res))
+                .configure(crate::config::app::config_services),
+        )
+        .await;
 
         test::TestRequest::post()
             .uri("/api/auth/signup")
             .set(header::ContentType::json())
-            .set_payload(r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes())
+            .set_payload(
+                r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes(),
+            )
             .send_request(&mut app)
             .await;
 
@@ -224,7 +252,7 @@ mod tests {
             .set_payload(r#"{"username_or_email":"admin","password":"password"}"#.as_bytes())
             .send_request(&mut app)
             .await;
-        
+
         assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
     }
 
@@ -234,34 +262,39 @@ mod tests {
 
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::default()
-                .send_wildcard()
-                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-                .allowed_header(http::header::CONTENT_TYPE)
-                .max_age(3600))
-            .data(pool.clone())
-            .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::auth_middleware::Authentication)
-            .wrap_fn(|req, srv| {
-                srv.call(req).map(|res| res)
-            })
-            .configure(crate::config::app::config_services)
-        ).await;
+                .wrap(
+                    Cors::default()
+                        .send_wildcard()
+                        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                        .allowed_header(http::header::CONTENT_TYPE)
+                        .max_age(3600),
+                )
+                .data(pool.clone())
+                .wrap(actix_web::middleware::Logger::default())
+                .wrap(crate::middleware::auth_middleware::Authentication)
+                .wrap_fn(|req, srv| srv.call(req).map(|res| res))
+                .configure(crate::config::app::config_services),
+        )
+        .await;
 
         test::TestRequest::post()
             .uri("/api/auth/signup")
             .set(header::ContentType::json())
-            .set_payload(r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes())
+            .set_payload(
+                r#"{"username":"admin","email":"admin@gmail.com","password":"123456"}"#.as_bytes(),
+            )
             .send_request(&mut app)
             .await;
 
         let resp = test::TestRequest::post()
             .uri("/api/auth/login")
             .set(header::ContentType::json())
-            .set_payload(r#"{"username_or_email":"admin@gmail.com","password":"password"}"#.as_bytes())
+            .set_payload(
+                r#"{"username_or_email":"admin@gmail.com","password":"password"}"#.as_bytes(),
+            )
             .send_request(&mut app)
             .await;
-        
+
         assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
     }
 
@@ -271,24 +304,28 @@ mod tests {
 
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::default()
-                .send_wildcard()
-                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-                .allowed_header(http::header::CONTENT_TYPE)
-                .max_age(3600))
-            .data(pool.clone())
-            .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::auth_middleware::Authentication)
-            .wrap_fn(|req, srv| {
-                srv.call(req).map(|res| res)
-            })
-            .configure(crate::config::app::config_services)
-        ).await;
+                .wrap(
+                    Cors::default()
+                        .send_wildcard()
+                        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                        .allowed_header(http::header::CONTENT_TYPE)
+                        .max_age(3600),
+                )
+                .data(pool.clone())
+                .wrap(actix_web::middleware::Logger::default())
+                .wrap(crate::middleware::auth_middleware::Authentication)
+                .wrap_fn(|req, srv| srv.call(req).map(|res| res))
+                .configure(crate::config::app::config_services),
+        )
+        .await;
 
         test::TestRequest::post()
             .uri("/api/auth/signup")
             .set(header::ContentType::json())
-            .set_payload(r#"{"username":"admin","email":"admin@gmail.com","password":"password"}"#.as_bytes())
+            .set_payload(
+                r#"{"username":"admin","email":"admin@gmail.com","password":"password"}"#
+                    .as_bytes(),
+            )
             .send_request(&mut app)
             .await;
 
@@ -298,7 +335,7 @@ mod tests {
             .set_payload(r#"{"username_or_email":"abc","password":"123456"}"#.as_bytes())
             .send_request(&mut app)
             .await;
-        
+
         assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
     }
 
@@ -308,24 +345,28 @@ mod tests {
 
         let mut app = test::init_service(
             App::new()
-            .wrap(Cors::default()
-                .send_wildcard()
-                .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-                .allowed_header(http::header::CONTENT_TYPE)
-                .max_age(3600))
-            .data(pool.clone())
-            .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::auth_middleware::Authentication)
-            .wrap_fn(|req, srv| {
-                srv.call(req).map(|res| res)
-            })
-            .configure(crate::config::app::config_services)
-        ).await;
+                .wrap(
+                    Cors::default()
+                        .send_wildcard()
+                        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                        .allowed_header(http::header::CONTENT_TYPE)
+                        .max_age(3600),
+                )
+                .data(pool.clone())
+                .wrap(actix_web::middleware::Logger::default())
+                .wrap(crate::middleware::auth_middleware::Authentication)
+                .wrap_fn(|req, srv| srv.call(req).map(|res| res))
+                .configure(crate::config::app::config_services),
+        )
+        .await;
 
         test::TestRequest::post()
             .uri("/api/auth/signup")
             .set(header::ContentType::json())
-            .set_payload(r#"{"username":"admin","email":"admin@gmail.com","password":"password"}"#.as_bytes())
+            .set_payload(
+                r#"{"username":"admin","email":"admin@gmail.com","password":"password"}"#
+                    .as_bytes(),
+            )
             .send_request(&mut app)
             .await;
 
@@ -335,7 +376,7 @@ mod tests {
             .set_payload(r#"{"username_or_email":"abc@gmail.com","password":"123456"}"#.as_bytes())
             .send_request(&mut app)
             .await;
-        
+
         assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
     }
 }
