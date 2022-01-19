@@ -5,25 +5,25 @@ authors = ["Hai Phan <bahaimt@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-actix-web = "3.3.2"
+actix-web = "3.3.3"
 actix-rt = "1.1.1"
-actix-service = "1.0.6"
+actix-service = "2.0.2"
 actix-cors = "0.5.4"
 log = "0.4.14"
 env_logger = "0.9.0"
 diesel_migrations = "1.4.0"
-serde = "1.0.123"
-serde_derive = "1.0.123"
-serde_json = "1.0.62"
+serde = "1.0.133"
+serde_derive = "1.0.133"
+serde_json = "1.0.75"
 dotenv = "0.15.0"
-futures = "0.3.12"
+futures = "0.3.19"
 failure = "0.1.8"
-derive_more = "0.99.11"
+derive_more = "0.99.17"
 jsonwebtoken = "7.2.0"
 bcrypt = "0.10.1"
 
 [dependencies.diesel]
-version = "1.4.5"
+version = "1.4.8"
 features = ["postgres", "r2d2", "chrono"]
 
 [dependencies.chrono]
@@ -35,5 +35,5 @@ version = "0.8.2"
 features = ["v4"]
 
 [dev-dependencies.diesel]
-version = "1.4.5"
+version = "1.4.8"
 features = ["sqlite", "r2d2", "chrono"]

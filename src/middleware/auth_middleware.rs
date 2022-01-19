@@ -1,19 +1,18 @@
-use crate::{config::db::Pool, constants, models::response::ResponseBody, utils::token_utils};
-use actix_service::{Service, Transform};
-use actix_web::{
-    dev::{ServiceRequest, ServiceResponse},
-    http::{HeaderName, HeaderValue, Method},
-    web::Data,
-    Error, HttpResponse,
-};
-use futures::{
-    future::{ok, Ready},
-    Future,
-};
-use std::{
-    pin::Pin,
-    task::{Context, Poll},
-};
+use std::pin::Pin;
+use std::task::{Context, Poll};
+
+use actix_web::dev::{Service, ServiceRequest, ServiceResponse, Transform};
+use actix_web::http::{HeaderName, HeaderValue, Method};
+use actix_web::web::Data;
+use actix_web::Error;
+use actix_web::HttpResponse;
+use futures::future::{ok, Ready};
+use futures::Future;
+
+use crate::config::db::Pool;
+use crate::constants;
+use crate::models::response::ResponseBody;
+use crate::utils::token_utils;
 
 pub struct Authentication;
 
@@ -34,6 +33,7 @@ where
         ok(AuthenticationMiddleware { service })
     }
 }
+
 pub struct AuthenticationMiddleware<S> {
     service: S,
 }
@@ -53,11 +53,11 @@ where
         self.service.poll_ready(cx)
     }
 
-    fn call(&mut self, mut req: ServiceRequest) -> Self::Future {
+    fn call(&mut self, req: ServiceRequest) -> Self::Future {
         let mut authenticate_pass: bool = false;
 
         // Bypass some account routes
-        let headers = req.headers_mut();
+        let mut headers = req.headers().clone();
         headers.append(
             HeaderName::from_static("content-length"),
             HeaderValue::from_static("true"),

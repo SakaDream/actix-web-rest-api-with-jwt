@@ -9,7 +9,7 @@ fn ping() -> HttpResponse {
 mod tests {
     use crate::{config, App};
     use actix_cors::Cors;
-    use actix_service::Service;
+    use actix_web::dev::Service;
     use actix_web::{http, http::StatusCode, test};
     use futures::FutureExt;
 

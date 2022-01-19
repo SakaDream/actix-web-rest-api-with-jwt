@@ -35,7 +35,7 @@ mod services;
 mod utils;
 
 use actix_cors::Cors;
-use actix_service::Service;
+use actix_web::dev::Service;
 use actix_web::{http, App, HttpServer};
 use futures::FutureExt;
 use std::default::Default;
@@ -68,7 +68,7 @@ async fn main() -> io::Result<()> {
             )
             .data(pool.clone())
             .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::auth_middleware::Authentication) // Comment this line of code if you want to integrate with yew-address-book-frontend
+            .wrap(crate::middleware::auth_middleware::Authentication) // Comment this line if you want to integrate with yew-address-book-frontend
             .wrap_fn(|req, srv| srv.call(req).map(|res| res))
             .configure(config::app::config_services)
     })
@@ -81,7 +81,7 @@ async fn main() -> io::Result<()> {
 mod tests {
     use crate::config;
     use actix_cors::Cors;
-    use actix_service::Service;
+    use actix_web::dev::Service;
     use actix_web::{http, App, HttpServer};
     use futures::FutureExt;
 
