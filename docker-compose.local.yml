@@ -1,6 +1,6 @@
 version: '3'
 services:
-  db:
+  address-book-db-local:
     container_name: address_book_db
     image: postgres
     restart: always
@@ -10,7 +10,7 @@ services:
     - POSTGRES_PASSWORD=postgres
     volumes: 
     - pgdata:/var/lib/postgresql/data
-  app:
+  address-book-api-local:
     container_name: address_book_be
     build:
       context: .
@@ -21,8 +21,8 @@ services:
     environment:
     - APP_HOST=0.0.0.0
     - APP_PORT=8000
-    - DATABASE_URL=postgres://postgres:postgres@db/postgres
+    - DATABASE_URL=postgres://postgres:postgres@address-book-db-local/postgres
     depends_on:
-    - db
+    - address-book-db-local
 volumes:
   pgdata:

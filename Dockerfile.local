@@ -50,4 +50,4 @@ COPY ./wait-for-it.sh .
 EXPOSE 8000
 
 # run the binary
-CMD ["./wait-for-it.sh", "db:5432", "--", "/app/actix-web-rest-api-with-jwt"]
+CMD ["/app/actix-web-rest-api-with-jwt"]

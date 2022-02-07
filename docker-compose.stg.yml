@@ -1,0 +1,38 @@
+version: '3'
+services:
+  address-book-db-stg:
+    container_name: address_book_db
+    image: postgres
+    restart: always
+    ports:
+    - "5432:5432"
+    environment:
+    - POSTGRES_PASSWORD=postgres
+    volumes: 
+    - pgdata:/var/lib/postgresql/data
+  address-book-api-stg:
+    container_name: address_book_be
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    restart: always
+    ports:
+    - "8000:8000"
+    environment:
+    - APP_HOST=0.0.0.0
+    - APP_PORT=8000
+    - DATABASE_URL=postgres://postgres:postgres@address-book-db-stg/postgres
+    depends_on:
+    - address-book-db-stg
+  address-book-client-stg:
+    container_name: address_book_client
+    image: yew-address-book-client
+    restart: always
+    ports:
+    - "3000:3000"
+    environment:
+    - NODE_ENV=staging
+    depends_on:
+    - address-book-api-stg
+volumes:
+  pgdata:
