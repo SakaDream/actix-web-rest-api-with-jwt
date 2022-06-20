@@ -12,6 +12,13 @@ A simple CRUD backend app using Actix-web, Diesel and JWT
 
 Or using [Docker](https://www.docker.com/)
 
+P/s: On Linux distro maybe got error like "= note: /usr/bin/ld: cannot find -lsqlite3"
+- Fedora/CentOS
+  - Step 1: Find lib by command yum list '*sqlite*'
+  - Step 2: Run command sudo dnf/yum install libsqlite3x.x86_64 libsqlite3x-devel.x86_64
+- Ubuntu/Ubuntu Server
+  - Step 1: Run command sudo apt-get install libsqlite3-dev libpq-dev
+
 ## How to run
 
 ### Manual
