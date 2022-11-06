@@ -16,34 +16,41 @@ Or using [Docker](https://www.docker.com/)
 
 ### Manual
 
-- Rename `secret.key.sample` to `secret.key` or create your own key by running `head -c16 /dev/urandom > secret.key` in command line (Linux/UNIX only) and copy to `/src` folder
+- Rename `secret.key.sample` to `secret.key` or create your own key by running `head -c16 /dev/urandom > secret.key` in
+  command line (Linux/UNIX only) and copy to `/src` folder
 - Create a database in postgres cli or [pgAdmin](https://www.pgadmin.org/) tool
 - Rename `.env.sample` to `.env` and update the database connection string in `DATABASE_URL` key.
 - Build with release profile: `cargo build --release`
 - Run release binary in command line/terminal.
-  - Windows: `target/release/actix-web-rest-api-with-jwt.exe`
-  - Linux/UNIX: `target/release/actix-web-rest-api-with-jwt`
+    - Windows: `target/release/actix-web-rest-api-with-jwt.exe`
+    - Linux/UNIX: `target/release/actix-web-rest-api-with-jwt`
 - Enjoy! 😄
 
 ### Docker
 
 - Enter into project directory
-- Run `docker-compose -f docker-compose.local.yml up` for local environment or `docker-compose -f docker-compose.prod.yml up` for production environment
+- Run `docker-compose -f docker-compose.local.yml up` for local environment
+  or `docker-compose -f docker-compose.prod.yml up` for production environment
 - Enjoy! 😄
 
 ### Note for yew-address-book-client
-- I also made [yew-address-book-client](https://github.com/SakaDream/yew-address-book-client), an Address Book Frontend using yew-rs.
-- yew-address-book-client is heavily under in development, currently the web client does not have login/signup page, so if you want to integrate with backend-side, comment this line bellow in `main.rs` to disable authentication middleware
-https://github.com/SakaDream/actix-web-rest-api-with-jwt/blob/636d6e548f60d341c05707a0e5d3f4e1ee02e60a/src/main.rs#L70
+
+- I also made [yew-address-book-client](https://github.com/SakaDream/yew-address-book-client), an Address Book Frontend
+  using yew-rs.
+- yew-address-book-client is heavily under in development, currently the web client does not have login/signup page, so
+  if you want to integrate with backend-side, comment this line bellow in `main.rs` to disable authentication middleware
+  https://github.com/SakaDream/actix-web-rest-api-with-jwt/blob/636d6e548f60d341c05707a0e5d3f4e1ee02e60a/src/main.rs#L70
 
 ## APIs
 
 ### Address: **`localhost:8000`**
 
 ### `GET /api/ping`: Ping
+
 ```bash
 curl -X GET -i 'http://127.0.0.1:8000/api/ping'
 ```
+
 - Response:
     - 200 OK
     ```
@@ -51,6 +58,7 @@ curl -X GET -i 'http://127.0.0.1:8000/api/ping'
     ```
 
 ### `POST /api/auth/signup`: Signup
+
 ```bash
 curl -X POST -i 'http://127.0.0.1:8000/api/auth/signup' \
   -H "Content-Type: application/json" \
@@ -61,7 +69,8 @@ curl -X POST -i 'http://127.0.0.1:8000/api/auth/signup' \
   }'
 ```
 
-  - Request body:
+- Request body:
+
   ```
   {
      "username": string,
@@ -69,53 +78,59 @@ curl -X POST -i 'http://127.0.0.1:8000/api/auth/signup' \
      "password": string       // a raw password
   }
   ```
-  - Response
+
+- Response
     - 200 OK
-    ```
-    {
-       "message": "signup successfully",
-       "data": ""
-    }
-    ```
+  ```
+  {
+     "message": "signup successfully",
+     "data": ""
+  }
+  ```
     - 400 Bad Request
-    ```
-    {
-       "message": "User '{username}' is already registered",
-       "data": ""
-    }
-    ```
+  ```
+  {
+     "message": "User '{username}' is already registered",
+     "data": ""
+  }
+  ```
 
 ### `POST /api/auth/login`: Login
+
 ```bash
 curl -X POST -H 'Content-Type: application/json' -i 'http://127.0.0.1:8000/api/auth/login'  \
   --data '{"username_or_email":"user",  "password":"4S3cr3tPa55w0rd"}'
 ```
-  - Request body:
+
+- Request body:
+
   ```
   {
      "username_or_email": string,
      "password": string       // a raw password
   }
   ```
-  - Response
+
+- Response
     - 200 OK
-    ```
-    {
-       "message": "login successfully",
-       "data": {
-         "token": string      // bearer token
-       }
-    }
-    ```
+  ```
+  {
+     "message": "login successfully",
+     "data": {
+       "token": string      // bearer token
+     }
+  }
+  ```
     - 400 Bad Request
-    ```
-    {
-       "message": "wrong username or password, please try again",
-       "data": ""
-    }
-    ```
+  ```
+  {
+     "message": "wrong username or password, please try again",
+     "data": ""
+  }
+  ```
 
 ### `POST /api/auth/logout`: Logout
+
 ```bash
 curl -X POST -H 'Content-Type: application/json' \
   -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzcyNTc4NzksImV4cCI6MTU3Nzg2MjY3OSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiYzUxNWE3NTg3NGYzNGVjNGFmNDJmNWE2M2QxMDVjMGYifQ.B9w6FxFdypb5GCRMKXZ9CZWFxQLFjvmPSusMCtcE-Ac' \
@@ -123,73 +138,79 @@ curl -X POST -H 'Content-Type: application/json' \
 ```
 
 ### `GET /api/address-book`: Get all people information
+
 ```bash
 curl -X GET -H 'Content-Type: application/json' \
   -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
   -i 'http://127.0.0.1:8000/api/address-book'
 ```
-  - Header:
+
+- Header:
     - Authorization: bearer \<token\>
-  - Response
+- Response
     - 200 OK
-    ```
-    {
-       "message": "ok",
-       "data": [
-          {
-            "id": int32,
-            "name": string,
-            "gender": boolean,      // true for male, false for female
-            "age": int32,
-            "address": string,
-            "phone": string,
-            "email": string
-          }
-       ]
-    }
-    ```
+  ```
+  {
+     "message": "ok",
+     "data": [
+        {
+          "id": int32,
+          "name": string,
+          "gender": boolean,      // true for male, false for female
+          "age": int32,
+          "address": string,
+          "phone": string,
+          "email": string
+        }
+     ]
+  }
+  ```
 
 ### `GET /api/address-book/{id}`: Get person information by id
+
 ```bash
 curl -X GET -H 'Content-Type: application/json' \
   -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
   -i 'http://127.0.0.1:8000/api/address-book/2'
 ```
-  - Param path:
+
+- Param path:
     - id: int32
-  - Header:
+- Header:
     - Authorization: bearer \<token\>
-  - Response
+- Response
     - 200 OK
-    ```
-    {
-       "message": "ok",
-       "data": {
-         "id": int32,
-         "name": string,
-         "gender": boolean,      // true for male, false for female
-         "age": int32,
-         "address": string,
-         "phone": string,
-         "email": string
-       }
-    }
-    ```
+  ```
+  {
+     "message": "ok",
+     "data": {
+       "id": int32,
+       "name": string,
+       "gender": boolean,      // true for male, false for female
+       "age": int32,
+       "address": string,
+       "phone": string,
+       "email": string
+     }
+  }
+  ```
     - 404 Not Found
-    ```
-    {
-       "message": "person with id {id} not found",
-       "data": ""
-    }
-    ```
+  ```
+  {
+     "message": "person with id {id} not found",
+     "data": ""
+  }
+  ```
 
 ### `GET /api/address-book/filter`: Filter person information
+
 ```bash
 curl -X GET -H 'Content-Type: application/json' \
   -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
   -i 'http://127.0.0.1:8000/api/address-book/filter?name=foo&sort_by=name&sort_direction=asc&page_num=0&page_size=10'
 ```
-  - Query param:
+
+- Query param:
     - id: int32
     - name: string
     - gender: boolean
@@ -201,31 +222,32 @@ curl -X GET -H 'Content-Type: application/json' \
     - sort_direction: string (ASC or DESC)
     - page_num: int32
     - page_size: int32
-  - Header:
+- Header:
     - Authorization: bearer \<token\>
-  - Response
+- Response
     - 200 OK
-    ```
-    {
-      "message": "ok",
-      "data": [
-        {
-          "id": int32,
-          "name": string,
-          "gender": boolean,      // true for male, false for female
-          "age": int32,
-          "address": string,
-          "phone": string,
-          "email": string
-        }
-      ],
-      "page_num": int32,
-      "page_size": int32,
-      "total_elements": int32
-    }
-    ```
+  ```
+  {
+    "message": "ok",
+    "data": [
+      {
+        "id": int32,
+        "name": string,
+        "gender": boolean,      // true for male, false for female
+        "age": int32,
+        "address": string,
+        "phone": string,
+        "email": string
+      }
+    ],
+    "page_num": int32,
+    "page_size": int32,
+    "total_elements": int32
+  }
+  ```
 
 ### `POST /api/address-book`: Add person information
+
 ```bash
 curl -X POST -H 'Content-Type: application/json' \
   -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
@@ -240,36 +262,38 @@ curl -X POST -H 'Content-Type: application/json' \
   }
 '
 ```
-  - Header:
+
+- Header:
     - Authorization: bearer \<token\>
-  - Request body:
-    ```
-    {
-      "name": string,
-      "gender": boolean,      // true for male, false for female
-      "age": int32,
-      "address": string,
-      "phone": string,
-      "email": string
-    }
-    ```
-  - Response
+- Request body:
+  ```
+  {
+    "name": string,
+    "gender": boolean,      // true for male, false for female
+    "age": int32,
+    "address": string,
+    "phone": string,
+    "email": string
+  }
+  ```
+- Response
     - 201 Created
-    ```
-    {
-      "message": "ok",
-      "data": ""
-    }
-    ```
+  ```
+  {
+    "message": "ok",
+    "data": ""
+  }
+  ```
     - 500 Internal Server Error
-    ```
-    {
-      "message": "can not insert data",
-      "data": ""
-    }
-    ```  
+  ```
+  {
+    "message": "can not insert data",
+    "data": ""
+  }
+  ```  
 
 ### `PUT /api/address-book/{id}`: Update person information by id
+
 ```bash
 curl -X PUT -H 'Content-Type: application/json' \
   -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
@@ -284,11 +308,13 @@ curl -X PUT -H 'Content-Type: application/json' \
   }
 '
 ```
-  - Param path:
+
+- Param path:
     - id: int32
-  - Header:
+- Header:
     - Authorization: bearer \<token\>
-  - Request body:
+- Request body:
+
   ```
   {
     "name": string,
@@ -299,54 +325,60 @@ curl -X PUT -H 'Content-Type: application/json' \
     "email": string
   }
   ```
-  - Response
+
+- Response
     - 200 OK
-    ```
-    {
-      "message": "ok",
-      "data": ""
-    }
-    ```
+  ```
+  {
+    "message": "ok",
+    "data": ""
+  }
+  ```
     - 500 Internal Server Error
-    ```
-    {
-      "message": "can not update data",
-      "data": ""
-    }
-    ```
+  ```
+  {
+    "message": "can not update data",
+    "data": ""
+  }
+  ```
 
 ### `DELETE /api/address-book/{id}`: Delete person information by id
+
 ```bash
 curl -X DELETE -H 'Content-Type: application/json' \
   -H 'Authorization: bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzU4NzM4MjksImV4cCI6MTU3NjQ3ODYyOSwidXNlciI6ImMiLCJsb2dpbl9zZXNzaW9uIjoiZjU5N2M3MTIxZTExNDBhMGE0ZjE0YmQ4N2NjM2Q4MWUifQ.6qppDfRgOw45eExJ7MUEwpcu3AUXXe9_ifj_mp7k22k' \
   -i 'http://127.0.0.1:8000/api/address-book/2'
 ```
-  - Param path:
+
+- Param path:
     - id: int32
-  - Header:
+- Header:
     - Authorization: bearer \<token\>
-  - Response
+- Response
     - 200 OK
-    ```
-    {
-      "message": "ok",
-      "data": ""
-    }
-    ```
+  ```
+  {
+    "message": "ok",
+    "data": ""
+  }
+  ```
     - 500 Internal Server Error
-    ```
-    {
-      "message": "can not delete data",
-      "data": ""
-    }
-    ```
+  ```
+  {
+    "message": "can not delete data",
+    "data": ""
+  }
+  ```
 
 ### browser OPTIONS curl request example
+
 ```bash
 curl -X OPTIONS -i 'http://127.0.0.1:8000/api/login' \
   -H "Origin: http://example.com" -H "Access-Control-Request-Method: POST"
 ```
-  - Response
+
+- Response
+
   ```
   HTTP/1.1 200 OK
   content-length: 0
@@ -358,12 +390,13 @@ curl -X OPTIONS -i 'http://127.0.0.1:8000/api/login' \
   ```
 
 ### Errors:
-  - Invalid or missing token
+
+- Invalid or missing token
     - Status code: 401 Unauthorized
     - Response:
-    ```
-    {
-      "message": "invalid token, please login again",
-      "data": ""
-    }
-    ```
+  ```
+  {
+    "message": "invalid token, please login again",
+    "data": ""
+  }
+  ```
