@@ -1,28 +1,13 @@
 #![allow(unused_must_use)]
 
-#[macro_use]
-extern crate actix_web;
-#[macro_use]
-extern crate log;
-#[macro_use]
-extern crate diesel;
-#[macro_use]
-extern crate diesel_migrations;
-#[macro_use]
-extern crate serde_derive;
-#[macro_use]
-extern crate serde_json;
-extern crate actix_cors;
-extern crate actix_rt;
-extern crate bcrypt;
-extern crate derive_more;
-extern crate dotenv;
-extern crate env_logger;
-extern crate failure;
-extern crate futures;
-extern crate jsonwebtoken;
-extern crate serde;
-extern crate uuid;
+use std::default::Default;
+use std::{env, io};
+
+use actix_cors::Cors;
+use actix_web::dev::Service;
+use actix_web::web;
+use actix_web::{http, App, HttpServer};
+use futures::FutureExt;
 
 mod api;
 mod config;
@@ -33,13 +18,6 @@ mod models;
 mod schema;
 mod services;
 mod utils;
-
-use actix_cors::Cors;
-use actix_web::dev::Service;
-use actix_web::{http, App, HttpServer};
-use futures::FutureExt;
-use std::default::Default;
-use std::{env, io};
 
 #[actix_rt::main]
 async fn main() -> io::Result<()> {
@@ -52,7 +30,8 @@ async fn main() -> io::Result<()> {
     let app_url = format!("{}:{}", &app_host, &app_port);
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL not found.");
 
-    let pool = config::db::migrate_and_config_db(&db_url);
+    let pool = config::db::init_db_pool(&db_url);
+    config::db::run_migration(&mut pool.get().unwrap());
 
     HttpServer::new(move || {
         App::new()
@@ -66,9 +45,9 @@ async fn main() -> io::Result<()> {
                     .allowed_header(http::header::CONTENT_TYPE)
                     .max_age(3600),
             )
-            .data(pool.clone())
+            .app_data(web::Data::new(pool.clone()))
             .wrap(actix_web::middleware::Logger::default())
-            .wrap(crate::middleware::auth_middleware::Authentication) // Comment this line if you want to integrate with yew-address-book-frontend
+            // .wrap(crate::middleware::auth_middleware::Authentication) // Comment this line if you want to integrate with yew-address-book-frontend
             .wrap_fn(|req, srv| srv.call(req).map(|res| res))
             .configure(config::app::config_services)
     })
@@ -79,15 +58,28 @@ async fn main() -> io::Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use crate::config;
     use actix_cors::Cors;
     use actix_web::dev::Service;
+    use actix_web::web;
     use actix_web::{http, App, HttpServer};
     use futures::FutureExt;
+    use testcontainers::clients;
+    use testcontainers::images::postgres::Postgres;
 
-    #[actix_rt::test]
+    use crate::config;
+
+    #[actix_web::test]
     async fn test_startup_ok() {
-        let pool = config::db::migrate_and_config_db(":memory:");
+        let docker = clients::Cli::default();
+        let postgres = docker.run(Postgres::default());
+        let pool = config::db::init_db_pool(
+            format!(
+                "postgres://postgres:postgres@127.0.0.1:{}/postgres",
+                postgres.get_host_port_ipv4(5432)
+            )
+            .as_str(),
+        );
+        config::db::run_migration(&mut pool.get().unwrap());
 
         HttpServer::new(move || {
             App::new()
@@ -100,7 +92,7 @@ mod tests {
                         .allowed_header(http::header::CONTENT_TYPE)
                         .max_age(3600),
                 )
-                .data(pool.clone())
+                .app_data(web::Data::new(pool.clone()))
                 .wrap(actix_web::middleware::Logger::default())
                 .wrap(crate::middleware::auth_middleware::Authentication)
                 .wrap_fn(|req, srv| srv.call(req).map(|res| res))
@@ -113,9 +105,18 @@ mod tests {
         assert_eq!(true, true);
     }
 
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn test_startup_without_auth_middleware_ok() {
-        let pool = config::db::migrate_and_config_db(":memory:");
+        let docker = clients::Cli::default();
+        let postgres = docker.run(Postgres::default());
+        let pool = config::db::init_db_pool(
+            format!(
+                "postgres://postgres:postgres@127.0.0.1:{}/postgres",
+                postgres.get_host_port_ipv4(5432)
+            )
+            .as_str(),
+        );
+        config::db::run_migration(&mut pool.get().unwrap());
 
         HttpServer::new(move || {
             App::new()
@@ -128,7 +129,7 @@ mod tests {
                         .allowed_header(http::header::CONTENT_TYPE)
                         .max_age(3600),
                 )
-                .data(pool.clone())
+                .app_data(web::Data::new(pool.clone()))
                 .wrap(actix_web::middleware::Logger::default())
                 .wrap_fn(|req, srv| srv.call(req).map(|res| res))
                 .configure(config::app::config_services)
