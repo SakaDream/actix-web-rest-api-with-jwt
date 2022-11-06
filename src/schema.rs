@@ -1,3 +1,5 @@
+use diesel::{allow_tables_to_appear_in_same_query, joinable, table};
+
 table! {
     login_history (id) {
         id -> Int4,
@@ -30,4 +32,4 @@ table! {
 
 joinable!(login_history -> users (user_id));
 
-allow_tables_to_appear_in_same_query!(login_history, people, users,);
+allow_tables_to_appear_in_same_query!(login_history, people, users);
