@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   cicd-linux:
@@ -19,7 +19,12 @@ jobs:
         shell: sh
         run: |
           mv src/secret.key.sample src/secret.key
-      
+
+      - name: Import sample dotenv file
+        shell: sh
+        run: |
+          mv src/.env.sample src/.env
+
       - name: Cache cargo registry
         uses: actions/cache@v1
         with:
@@ -112,7 +117,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-index-
             ${{ runner.os }}-
-  
+
       - name: Cache cargo build
         uses: actions/cache@v1
         with:
@@ -176,7 +181,7 @@ jobs:
         shell: sh
         run: |
           mv src/secret.key.sample src/secret.key
-      
+
       - name: Cache cargo registry
         uses: actions/cache@v1
         with:
@@ -194,7 +199,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-index-
             ${{ runner.os }}-
-  
+
       - name: Cache cargo build
         uses: actions/cache@v1
         with:
