@@ -23,7 +23,7 @@ jobs:
       - name: Import sample dotenv file
         shell: sh
         run: |
-          mv src/.env.sample src/.env
+          mv src/dotenv.sample src/.env
 
       - name: Cache cargo registry
         uses: actions/cache@v1
@@ -99,6 +99,10 @@ jobs:
       - name: Get temporary secret key
         shell: cmd
         run: ren src\secret.key.sample secret.key
+
+      - name: Import sample dotenv file
+        shell: cmd
+        run: ren src\dotenv.sample .env
 
       - name: Cache cargo registry
         uses: actions/cache@v1
@@ -181,6 +185,11 @@ jobs:
         shell: sh
         run: |
           mv src/secret.key.sample src/secret.key
+
+      - name: Import sample dotenv file
+        shell: sh
+        run: |
+          mv src/dotenv.sample src/.env
 
       - name: Cache cargo registry
         uses: actions/cache@v1

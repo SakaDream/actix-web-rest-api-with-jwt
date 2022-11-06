@@ -19,7 +19,7 @@ Or using [Docker](https://www.docker.com/)
 - Rename `secret.key.sample` to `secret.key` or create your own key by running `head -c16 /dev/urandom > secret.key` in
   command line (Linux/UNIX only) and copy to `/src` folder
 - Create a database in postgres cli or [pgAdmin](https://www.pgadmin.org/) tool
-- Rename `.env.sample` to `.env` and update the database connection string in `DATABASE_URL` key.
+- Rename `dotenv.sample` to `.env` and update the database connection string in `DATABASE_URL` key.
 - Build with release profile: `cargo build --release`
 - Run release binary in command line/terminal.
     - Windows: `target/release/actix-web-rest-api-with-jwt.exe`
