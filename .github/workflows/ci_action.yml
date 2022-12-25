@@ -98,11 +98,11 @@ jobs:
 
       - name: Get temporary secret key
         shell: cmd
-        run: ren src\secret.key.sample secret.key
+        run: ren src\secret.key.sample src\secret.key
 
       - name: Import sample dotenv file
         shell: cmd
-        run: ren src\dotenv.sample .env
+        run: ren dotenv.sample .env
 
       - name: Cache cargo registry
         uses: actions/cache@v1
@@ -189,7 +189,7 @@ jobs:
       - name: Import sample dotenv file
         shell: sh
         run: |
-          mv src/dotenv.sample src/.env
+          mv dotenv.sample .env
 
       - name: Cache cargo registry
         uses: actions/cache@v1
