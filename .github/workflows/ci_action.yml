@@ -23,7 +23,7 @@ jobs:
       - name: Import sample dotenv file
         shell: sh
         run: |
-          mv src/dotenv.sample src/.env
+          mv dotenv.sample .env
 
       - name: Cache cargo registry
         uses: actions/cache@v1
