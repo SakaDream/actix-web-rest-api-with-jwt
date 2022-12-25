@@ -51,6 +51,20 @@ pub async fn logout(req: HttpRequest, pool: web::Data<Pool>) -> Result<HttpRespo
     }
 }
 
+// GET api/auth/me
+pub async fn me(req: HttpRequest, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+    if let Some(authen_header) = req.headers().get(constants::AUTHORIZATION) {
+        match account_service::me(authen_header, &pool) {
+            Ok(login_info) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, login_info))),
+            Err(err) => Err(err),
+        }
+    } else {
+        Err(ServiceError::BadRequest {
+            error_message: constants::MESSAGE_TOKEN_MISSING.to_string(),
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use actix_cors::Cors;

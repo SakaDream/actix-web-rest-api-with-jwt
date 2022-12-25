@@ -7,7 +7,7 @@ use crate::{
     constants,
     error::ServiceError,
     models::{
-        user::{LoginDTO, User, UserDTO},
+        user::{LoginDTO, User, UserDTO, LoginInfoDTO},
         user_token::UserToken,
     },
     utils::token_utils,
@@ -56,7 +56,7 @@ pub fn login(login: LoginDTO, pool: &web::Data<Pool>) -> Result<TokenBodyRespons
 
 pub fn logout(authen_header: &HeaderValue, pool: &web::Data<Pool>) -> Result<(), ServiceError> {
     if let Ok(authen_str) = authen_header.to_str() {
-        if authen_str.starts_with("bearer") {
+        if token_utils::is_auth_header_valid(authen_header) {
             let token = authen_str[6..authen_str.len()].trim();
             if let Ok(token_data) = token_utils::decode_token(token.to_string()) {
                 if let Ok(username) = token_utils::verify_token(&token_data, pool) {
@@ -64,6 +64,23 @@ pub fn logout(authen_header: &HeaderValue, pool: &web::Data<Pool>) -> Result<(),
                         User::logout(user.id, &mut pool.get().unwrap());
                         return Ok(());
                     }
+                }
+            }
+        }
+    }
+
+    Err(ServiceError::InternalServerError {
+        error_message: constants::MESSAGE_PROCESS_TOKEN_ERROR.to_string(),
+    })
+}
+
+pub fn me(authen_header: &HeaderValue, pool: &web::Data<Pool>) -> Result<LoginInfoDTO, ServiceError> {
+    if let Ok(authen_str) = authen_header.to_str() {
+        if token_utils::is_auth_header_valid(authen_header) {
+            let token = authen_str[6..authen_str.len()].trim();
+            if let Ok(token_data) = token_utils::decode_token(token.to_string()) {
+                if let Ok(login_info) = User::find_login_info_by_token(&token_data.claims, &mut pool.get().unwrap()) {
+                    return Ok(login_info);
                 }
             }
         }

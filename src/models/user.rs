@@ -33,7 +33,7 @@ pub struct LoginDTO {
     pub password: String,
 }
 
-#[derive(Insertable, Deserialize)]
+#[derive(Insertable, Serialize, Deserialize)]
 #[diesel(table_name = users)]
 pub struct LoginInfoDTO {
     pub username: String,
@@ -105,6 +105,22 @@ impl User {
             .filter(login_session.eq(&user_token.login_session))
             .get_result::<User>(conn)
             .is_ok()
+    }
+
+    pub fn find_login_info_by_token(user_token: &UserToken, conn: &mut Connection) -> Result<LoginInfoDTO, String> {
+        let user_result = users
+        .filter(username.eq(&user_token.user))
+        .filter(login_session.eq(&user_token.login_session))
+        .get_result::<User>(conn);
+
+        if let Ok(user) = user_result {
+            return Ok(LoginInfoDTO {
+                username: user.username,
+                login_session: user.login_session,
+            });
+        }
+
+        Err("User not found!".to_string())
     }
 
     pub fn find_user_by_username(un: &str, conn: &mut Connection) -> QueryResult<User> {
