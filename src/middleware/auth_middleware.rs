@@ -84,27 +84,27 @@ where
                                 info!("Decoding token...");
                                 if token_utils::verify_token(&token_data, pool).is_ok() {
                                     info!("Valid token");
+                                    authenticate_pass = true;
                                 } else {
                                     error!("Invalid token");
-
-                                    let (request, _pl) = req.into_parts();
-
-                                    let response = HttpResponse::Unauthorized()
-                                        .json(ResponseBody::new(
-                                            constants::MESSAGE_INVALID_TOKEN,
-                                            constants::EMPTY,
-                                        ))
-                                        .map_into_right_body();
-
-                                    return Box::pin(async {
-                                        Ok(ServiceResponse::new(request, response))
-                                    });
                                 }
                             }
                         }
                     }
                 }
             }
+        }
+
+        if !authenticate_pass {
+            let (request, _pl) = req.into_parts();
+            let response = HttpResponse::Unauthorized()
+                .json(ResponseBody::new(
+                    constants::MESSAGE_INVALID_TOKEN,
+                    constants::EMPTY,
+                ))
+                .map_into_right_body();
+
+            return Box::pin(async { Ok(ServiceResponse::new(request, response)) });
         }
 
         let res = self.service.call(req);

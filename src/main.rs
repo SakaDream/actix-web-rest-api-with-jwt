@@ -47,7 +47,7 @@ async fn main() -> io::Result<()> {
             )
             .app_data(web::Data::new(pool.clone()))
             .wrap(actix_web::middleware::Logger::default())
-            // .wrap(crate::middleware::auth_middleware::Authentication) // Comment this line if you want to integrate with yew-address-book-frontend
+            .wrap(crate::middleware::auth_middleware::Authentication) // Comment this line if you want to integrate with yew-address-book-frontend
             .wrap_fn(|req, srv| srv.call(req).map(|res| res))
             .configure(config::app::config_services)
     })
