@@ -1,5 +1,7 @@
-use crate::api::*;
 use actix_web::web;
+use log::info;
+
+use crate::api::*;
 
 pub fn config_services(cfg: &mut web::ServiceConfig) {
     info!("Configuring routes...");
@@ -16,6 +18,9 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
                     )
                     .service(
                         web::resource("/logout").route(web::post().to(account_controller::logout)),
+                    )
+                    .service(
+                        web::resource("/me").route(web::get().to(account_controller::me)),
                     ),
             )
             .service(
@@ -26,7 +31,7 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
                             .route(web::post().to(address_book_controller::insert)),
                     )
                     .service(
-                        web::resource("/id/{id}")
+                        web::resource("/{id}")
                             .route(web::get().to(address_book_controller::find_by_id))
                             .route(web::put().to(address_book_controller::update))
                             .route(web::delete().to(address_book_controller::delete)),

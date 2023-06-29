@@ -1,12 +1,14 @@
+use bcrypt::{hash, verify, DEFAULT_COST};
+use diesel::{prelude::*, Identifiable, Insertable, Queryable};
+use serde::{Deserialize, Serialize};
+use uuid::Uuid;
+
 use crate::{
     config::db::Connection,
     constants,
     models::{login_history::LoginHistory, user_token::UserToken},
     schema::users::{self, dsl::*},
 };
-use bcrypt::{hash, verify, DEFAULT_COST};
-use diesel::prelude::*;
-use uuid::Uuid;
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
 pub struct User {
@@ -18,7 +20,7 @@ pub struct User {
 }
 
 #[derive(Insertable, Serialize, Deserialize)]
-#[table_name = "users"]
+#[diesel(table_name = users)]
 pub struct UserDTO {
     pub username: String,
     pub email: String,
@@ -31,29 +33,31 @@ pub struct LoginDTO {
     pub password: String,
 }
 
-#[derive(Insertable)]
-#[table_name = "users"]
+#[derive(Insertable, Serialize, Deserialize)]
+#[diesel(table_name = users)]
 pub struct LoginInfoDTO {
     pub username: String,
     pub login_session: String,
 }
 
 impl User {
-    pub fn signup(user: UserDTO, conn: &Connection) -> Result<String, String> {
-        if Self::find_user_by_username(&user.username, conn).is_err() {
-            let hashed_pwd = hash(&user.password, DEFAULT_COST).unwrap();
-            let user = UserDTO {
-                password: hashed_pwd,
-                ..user
+    pub fn signup(new_user: UserDTO, conn: &mut Connection) -> Result<String, String> {
+        if Self::find_user_by_username(&new_user.username, conn).is_err() {
+            let new_user = UserDTO {
+                password: hash(&new_user.password, DEFAULT_COST).unwrap(),
+                ..new_user
             };
-            diesel::insert_into(users).values(&user).execute(conn);
+            diesel::insert_into(users).values(new_user).execute(conn);
             Ok(constants::MESSAGE_SIGNUP_SUCCESS.to_string())
         } else {
-            Err(format!("User '{}' is already registered", &user.username))
+            Err(format!(
+                "User '{}' is already registered",
+                &new_user.username
+            ))
         }
     }
 
-    pub fn login(login: LoginDTO, conn: &Connection) -> Option<LoginInfoDTO> {
+    pub fn login(login: LoginDTO, conn: &mut Connection) -> Option<LoginInfoDTO> {
         if let Ok(user_to_verify) = users
             .filter(username.eq(&login.username_or_email))
             .or_filter(email.eq(&login.username_or_email))
@@ -89,13 +93,13 @@ impl User {
         None
     }
 
-    pub fn logout(user_id: i32, conn: &Connection) {
+    pub fn logout(user_id: i32, conn: &mut Connection) {
         if let Ok(user) = users.find(user_id).get_result::<User>(conn) {
             Self::update_login_session_to_db(&user.username, "", conn);
         }
     }
 
-    pub fn is_valid_login_session(user_token: &UserToken, conn: &Connection) -> bool {
+    pub fn is_valid_login_session(user_token: &UserToken, conn: &mut Connection) -> bool {
         users
             .filter(username.eq(&user_token.user))
             .filter(login_session.eq(&user_token.login_session))
@@ -103,18 +107,34 @@ impl User {
             .is_ok()
     }
 
-    pub fn find_user_by_username(un: &str, conn: &Connection) -> QueryResult<User> {
+    pub fn find_login_info_by_token(user_token: &UserToken, conn: &mut Connection) -> Result<LoginInfoDTO, String> {
+        let user_result = users
+        .filter(username.eq(&user_token.user))
+        .filter(login_session.eq(&user_token.login_session))
+        .get_result::<User>(conn);
+
+        if let Ok(user) = user_result {
+            return Ok(LoginInfoDTO {
+                username: user.username,
+                login_session: user.login_session,
+            });
+        }
+
+        Err("User not found!".to_string())
+    }
+
+    pub fn find_user_by_username(un: &str, conn: &mut Connection) -> QueryResult<User> {
         users.filter(username.eq(un)).get_result::<User>(conn)
     }
 
     pub fn generate_login_session() -> String {
-        Uuid::new_v4().to_simple().to_string()
+        Uuid::new_v4().to_string()
     }
 
     pub fn update_login_session_to_db(
         un: &str,
         login_session_str: &str,
-        conn: &Connection,
+        conn: &mut Connection,
     ) -> bool {
         if let Ok(user) = User::find_user_by_username(un, conn) {
             diesel::update(users.find(user.id))

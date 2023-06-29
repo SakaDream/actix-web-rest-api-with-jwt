@@ -1,23 +1,38 @@
 use crate::models::response::ResponseBody;
-use actix_web::{http::StatusCode, HttpResponse};
+use actix_web::{
+    error,
+    http::{header::ContentType, StatusCode},
+    HttpResponse,
+};
+use derive_more::{Display, Error};
 
-pub struct ServiceError {
-    pub http_status: StatusCode,
-    pub body: ResponseBody<String>,
+#[derive(Debug, Display, Error)]
+pub enum ServiceError {
+    #[display(fmt = "{error_message}")]
+    Unauthorized { error_message: String },
+
+    #[display(fmt = "{error_message}")]
+    InternalServerError { error_message: String },
+
+    #[display(fmt = "{error_message}")]
+    BadRequest { error_message: String },
+
+    #[display(fmt = "{error_message}")]
+    NotFound { error_message: String },
 }
 
-impl ServiceError {
-    pub fn new(http_status: StatusCode, message: String) -> ServiceError {
-        ServiceError {
-            http_status,
-            body: ResponseBody {
-                message,
-                data: String::new(),
-            },
+impl error::ResponseError for ServiceError {
+    fn status_code(&self) -> StatusCode {
+        match *self {
+            ServiceError::Unauthorized { .. } => StatusCode::UNAUTHORIZED,
+            ServiceError::InternalServerError { .. } => StatusCode::INTERNAL_SERVER_ERROR,
+            ServiceError::BadRequest { .. } => StatusCode::BAD_REQUEST,
+            ServiceError::NotFound { .. } => StatusCode::NOT_FOUND,
         }
     }
-
-    pub fn response(&self) -> HttpResponse {
-        HttpResponse::build(self.http_status).json(&self.body)
+    fn error_response(&self) -> HttpResponse {
+        HttpResponse::build(self.status_code())
+            .insert_header(ContentType::json())
+            .json(ResponseBody::new(&self.to_string(), String::from("")))
     }
 }

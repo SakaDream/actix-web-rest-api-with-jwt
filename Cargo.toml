@@ -5,35 +5,35 @@ authors = ["Hai Phan <bahaimt@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-actix-web = "3.3.2"
-actix-rt = "1.1.1"
-actix-service = "1.0.6"
-actix-cors = "0.5.4"
-log = "0.4.14"
-env_logger = "0.9.0"
-diesel_migrations = "1.4.0"
-serde = "1.0.123"
-serde_derive = "1.0.123"
-serde_json = "1.0.62"
+actix-web = "4.3.1"
+actix-rt = "2.8.0"
+actix-service = "2.0.2"
+actix-cors = "0.6.4"
+log = "0.4.18"
+env_logger = "0.10.0"
+diesel_migrations = "2.1.0"
+serde = "1.0.163"
+serde_derive = "1.0.163"
+serde_json = "1.0.96"
 dotenv = "0.15.0"
-futures = "0.3.12"
+futures = "0.3.28"
 failure = "0.1.8"
-derive_more = "0.99.11"
-jsonwebtoken = "7.2.0"
-bcrypt = "0.10.1"
+derive_more = "0.99.17"
+jsonwebtoken = "8.3.0"
+bcrypt = "0.14.0"
+base64 = "0.21.2"
 
 [dependencies.diesel]
-version = "1.4.5"
+version = "2.1.0"
 features = ["postgres", "r2d2", "chrono"]
 
 [dependencies.chrono]
-version = "0.4.19"
+version = "0.4.26"
 features = ["serde"]
 
 [dependencies.uuid]
-version = "0.8.2"
+version = "1.3.3"
 features = ["v4"]
 
-[dev-dependencies.diesel]
-version = "1.4.5"
-features = ["sqlite", "r2d2", "chrono"]
+[dev-dependencies]
+testcontainers = "0.14.0"

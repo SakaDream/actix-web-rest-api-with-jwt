@@ -1,9 +1,11 @@
+use diesel::{prelude::*, AsChangeset, Insertable, Queryable};
+use serde::{Deserialize, Serialize};
+
 use crate::{
     config::db::Connection,
     models::pagination::SortingAndPaging,
     schema::people::{self, dsl::*},
 };
-use diesel::prelude::*;
 
 use super::{filters::PersonFilter, response::Page};
 
@@ -19,7 +21,7 @@ pub struct Person {
 }
 
 #[derive(Insertable, AsChangeset, Serialize, Deserialize)]
-#[table_name = "people"]
+#[diesel(table_name = people)]
 pub struct PersonDTO {
     pub name: String,
     pub gender: bool,
@@ -30,15 +32,15 @@ pub struct PersonDTO {
 }
 
 impl Person {
-    pub fn find_all(conn: &Connection) -> QueryResult<Vec<Person>> {
+    pub fn find_all(conn: &mut Connection) -> QueryResult<Vec<Person>> {
         people.order(id.asc()).load::<Person>(conn)
     }
 
-    pub fn find_by_id(i: i32, conn: &Connection) -> QueryResult<Person> {
+    pub fn find_by_id(i: i32, conn: &mut Connection) -> QueryResult<Person> {
         people.find(i).get_result::<Person>(conn)
     }
 
-    pub fn filter(filter: PersonFilter, conn: &Connection) -> QueryResult<Page<Person>> {
+    pub fn filter(filter: PersonFilter, conn: &mut Connection) -> QueryResult<Page<Person>> {
         let mut query = people::table.into_boxed();
 
         if let Some(i) = filter.age {
@@ -87,19 +89,19 @@ impl Person {
             .load_and_count_items::<Person>(conn)
     }
 
-    pub fn insert(new_person: PersonDTO, conn: &Connection) -> QueryResult<usize> {
+    pub fn insert(new_person: PersonDTO, conn: &mut Connection) -> QueryResult<usize> {
         diesel::insert_into(people)
             .values(&new_person)
             .execute(conn)
     }
 
-    pub fn update(i: i32, updated_person: PersonDTO, conn: &Connection) -> QueryResult<usize> {
+    pub fn update(i: i32, updated_person: PersonDTO, conn: &mut Connection) -> QueryResult<usize> {
         diesel::update(people.find(i))
             .set(&updated_person)
             .execute(conn)
     }
 
-    pub fn delete(i: i32, conn: &Connection) -> QueryResult<usize> {
+    pub fn delete(i: i32, conn: &mut Connection) -> QueryResult<usize> {
         diesel::delete(people.find(i)).execute(conn)
     }
 }

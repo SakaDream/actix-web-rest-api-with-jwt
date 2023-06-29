@@ -1,0 +1,54 @@
+version: '3'
+services:
+  address-book-db-stg:
+    container_name: address_book_db
+    image: postgres:13
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=640ed49f-7291-4057-b88f-0aac862de6ff
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  address-book-redis-stg:
+    container_name: address_book_redis
+    image: redis:7
+    restart: always
+    ports:
+      - 6379:6379
+    environment:
+      - REDIS_PASSWORD=7d15a69d-2bb5-4f4b-aa25-8a6df1f6d0d9
+    volumes:
+      - redisdata:/data
+  address-book-api-stg:
+    container_name: address_book_be
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8000
+      - DATABASE_URL=postgres://postgres:640ed49f-7291-4057-b88f-0aac862de6ff@address-book-db-stg/postgres
+      - REDIS_URL=redis://default:7d15a69d-2bb5-4f4b-aa25-8a6df1f6d0d9@address-book-redis-stg
+      - MAX_AGE=604800
+      - SESSION_SECRET_KEY=FiMmpTlRjkxpISA09DvzBXTQDwcB9FsDkAcpOsE00HCAgfWabAMliDhKJWQKRV2o
+    depends_on:
+      - address-book-db-stg
+      - address-book-redis-stg
+  address-book-client-stg:
+    container_name: address_book_client
+    image: yew-address-book-client
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=staging
+      - SESSION_SECRET_KEY=FiMmpTlRjkxpISA09DvzBXTQDwcB9FsDkAcpOsE00HCAgfWabAMliDhKJWQKRV2o
+    depends_on:
+      - address-book-api-stg
+volumes:
+  pgdata:
+  redisdata:

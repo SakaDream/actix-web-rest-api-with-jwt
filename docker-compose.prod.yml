@@ -1,26 +1,50 @@
 version: '3'
 services:
-  db:
+  address-book-db-prod:
     container_name: address_book_db
-    image: postgres
+    image: postgres:13
     restart: always
     ports:
-    - "5432:5432"
+      - "5432:5432"
     environment:
-    - POSTGRES_PASSWORD=postgres
-    volumes: 
-    - pgdata:/var/lib/postgresql/data
-  app:
+      - POSTGRES_PASSWORD=9c82da59-cc10-4f4e-8777-413f2737533c
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  address-book-redis-prod:
+    container_name: address_book_redis
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=0758032e-141f-4a1c-bec2-7d3885ca012f
+  address-book-api-prod:
     container_name: address_book_be
     image: sakadream/actix-web-rest-api-with-jwt
     restart: always
     ports:
-    - "8000:8000"
+      - "8000:8000"
     environment:
-    - APP_HOST=0.0.0.0
-    - APP_PORT=8000
-    - DATABASE_URL=postgres://postgres:postgres@db/postgres
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8000
+      - DATABASE_URL=postgres://postgres:9c82da59-cc10-4f4e-8777-413f2737533c@address-book-db-prod/postgres
+      - REDIS_URL=redis://default:0758032e-141f-4a1c-bec2-7d3885ca012f@address-book-redis-prod
+      - MAX_AGE=604800
+      - SESSION_SECRET_KEY=fclpgMREIYcWNoO15lfY6HAq2JGuXueI3USak8ypuHo8cXRfPDnXj8SyQQ1KoQnS
     depends_on:
-    - db
+      - address-book-db-prod
+      - address-book-redis-prod
+  address-book-client-prod:
+    container_name: address_book_client
+    image: sakadream/yew-address-book-client
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - SESSION_SECRET_KEY=fclpgMREIYcWNoO15lfY6HAq2JGuXueI3USak8ypuHo8cXRfPDnXj8SyQQ1KoQnS
+    depends_on:
+      - address-book-api-prod
 volumes:
   pgdata:
+  redisdata:

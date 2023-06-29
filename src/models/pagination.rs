@@ -1,12 +1,13 @@
 // Source: https://github.com/diesel-rs/diesel/blob/master/examples/postgres/advanced-blog-cli/src/pagination.rs
 
 #![allow(unused_imports)]
+
 use diesel::pg::Pg;
 use diesel::prelude::*;
 use diesel::query_builder::*;
 use diesel::query_dsl::methods::LoadQuery;
 use diesel::sql_types::BigInt;
-use diesel::sqlite::Sqlite;
+use diesel::QueryId;
 
 use crate::constants::MESSAGE_OK;
 
@@ -24,6 +25,7 @@ impl<T> SortingAndPaging for T {
             sort_direction: crate::constants::EMPTY_STR.to_string(),
             per_page: crate::constants::DEFAULT_PER_PAGE,
             page,
+            offset: (page - 1) * crate::constants::DEFAULT_PER_PAGE,
         }
     }
 }
@@ -35,12 +37,12 @@ pub struct SortedAndPaginated<T> {
     sort_direction: String,
     page: i64,
     per_page: i64,
+    offset: i64,
 }
 
-#[cfg(not(test))]
 impl<T> SortedAndPaginated<T> {
     pub fn per_page(self, per_page: i64) -> Self {
-        SortedAndPaginated { per_page, ..self }
+        SortedAndPaginated { per_page, offset: (self.page - 1) * per_page, ..self }
     }
 
     pub fn sort(self, sort_by: String, sort_direction: String) -> Self {
@@ -51,36 +53,9 @@ impl<T> SortedAndPaginated<T> {
         }
     }
 
-    pub fn load_and_count_items<U>(self, conn: &PgConnection) -> QueryResult<Page<U>>
+    pub fn load_and_count_items<'a, U>(self, conn: &mut PgConnection) -> QueryResult<Page<U>>
     where
-        Self: LoadQuery<PgConnection, (U, i64)>,
-    {
-        let page = self.page;
-        let per_page = self.per_page;
-        let results = self.load::<(U, i64)>(conn)?;
-        let total = results.get(0).map(|x| x.1).unwrap_or(0);
-        let records = results.into_iter().map(|x| x.0).collect();
-        Ok(Page::new(MESSAGE_OK, records, page, per_page, total))
-    }
-}
-
-#[cfg(test)]
-impl<T> SortedAndPaginated<T> {
-    pub fn per_page(self, per_page: i64) -> Self {
-        SortedAndPaginated { per_page, ..self }
-    }
-
-    pub fn sort(self, sort_by: String, sort_direction: String) -> Self {
-        SortedAndPaginated {
-            sort_by,
-            sort_direction,
-            ..self
-        }
-    }
-
-    pub fn load_and_count_items<U>(self, conn: &SqliteConnection) -> QueryResult<Page<U>>
-    where
-        Self: LoadQuery<SqliteConnection, (U, i64)>,
+        Self: LoadQuery<'a, PgConnection, (U, i64)>,
     {
         let page = self.page;
         let per_page = self.per_page;
@@ -95,50 +70,19 @@ impl<T: Query> Query for SortedAndPaginated<T> {
     type SqlType = (T::SqlType, BigInt);
 }
 
-#[cfg(not(test))]
 impl<T> RunQueryDsl<PgConnection> for SortedAndPaginated<T> {}
 
-#[cfg(not(test))]
 impl<T> QueryFragment<Pg> for SortedAndPaginated<T>
 where
     T: QueryFragment<Pg>,
 {
-    fn walk_ast(&self, mut out: AstPass<Pg>) -> QueryResult<()> {
+    fn walk_ast<'b>(&'b self, mut out: AstPass<'_, 'b, Pg>) -> QueryResult<()> {
         out.push_sql("SELECT *, COUNT(*) OVER () FROM (");
         self.query.walk_ast(out.reborrow())?;
-        out.push_sql(") t ");
-        if &self.sort_by.as_str().len() > &0 {
-            out.push_sql(format!(" ORDER BY {} {}", &self.sort_by, &self.sort_direction).as_str());
-        }
-        out.push_sql(" LIMIT ");
+        out.push_sql(") t LIMIT ");
         out.push_bind_param::<BigInt, _>(&self.per_page)?;
         out.push_sql(" OFFSET ");
-        let offset = (self.page - 1) * self.per_page;
-        out.push_bind_param::<BigInt, _>(&offset)?;
-        Ok(())
-    }
-}
-
-#[cfg(test)]
-impl<T> RunQueryDsl<SqliteConnection> for SortedAndPaginated<T> {}
-
-#[cfg(test)]
-impl<T> QueryFragment<Sqlite> for SortedAndPaginated<T>
-where
-    T: QueryFragment<Sqlite>,
-{
-    fn walk_ast(&self, mut out: AstPass<Sqlite>) -> QueryResult<()> {
-        out.push_sql("SELECT *, COUNT(*) OVER () FROM (");
-        self.query.walk_ast(out.reborrow())?;
-        out.push_sql(") t ");
-        if &self.sort_by.as_str().len() > &0 {
-            out.push_sql(format!(" ORDER BY {} {}", &self.sort_by, &self.sort_direction).as_str());
-        }
-        out.push_sql(" LIMIT ");
-        out.push_bind_param::<BigInt, _>(&self.per_page)?;
-        out.push_sql(" OFFSET ");
-        let offset = (self.page - 1) * self.per_page;
-        out.push_bind_param::<BigInt, _>(&offset)?;
+        out.push_bind_param::<BigInt, _>(&self.offset)?;
         Ok(())
     }
 }
