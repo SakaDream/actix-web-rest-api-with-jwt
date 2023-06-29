@@ -26,7 +26,7 @@ RUN touch .env; \
 
 # rebuild app with project source
 RUN rm ./target/debug/deps/actix_web_rest_api_with_jwt*; \
-    cargo build
+    cargo build --release
 
 # deploy stage
 FROM debian:buster-slim
@@ -41,7 +41,7 @@ RUN apt-get update; \
     rm -rf /var/lib/apt/lists/*
 
 # copy binary and configuration files
-COPY --from=build /app/target/debug/actix-web-rest-api-with-jwt .
+COPY --from=build /app/target/release/actix-web-rest-api-with-jwt .
 COPY --from=build /app/.env .
 COPY --from=build /app/diesel.toml .
 COPY ./wait-for-it.sh .

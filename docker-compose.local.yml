@@ -43,9 +43,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=staging
+      - NODE_ENV=local
       - SESSION_SECRET_KEY=FiMmpTlRjkxpISA09DvzBXTQDwcB9FsDkAcpOsE00HCAgfWabAMliDhKJWQKRV2o
     depends_on:
-      - address-book-api-stg
+      - address-book-api-local
+      - address-book-db-local
+      - address-book-redis-local
 volumes:
   pgdata:

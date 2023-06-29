@@ -3,7 +3,6 @@ use diesel::{
     pg::PgConnection,
     r2d2::{self, ConnectionManager},
     sql_query,
-    sqlite::SqliteConnection,
 };
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 
