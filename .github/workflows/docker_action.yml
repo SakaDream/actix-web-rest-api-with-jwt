@@ -80,7 +80,7 @@ jobs:
     needs: cicd-linux-docker
     steps:
       - name: Download app archive
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: artifact-linux-docker
 
