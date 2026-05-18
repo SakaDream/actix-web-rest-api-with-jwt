@@ -27,8 +27,7 @@ P/s: On Linux distro maybe got error like "= note: /usr/bin/ld: cannot find -lsq
   - For Windows: Copy all files inside `libs\windows` folder to other location (e.g `C:\libs`). Add `PQ_LIB_DIR` and `SQLITE3_LIB_DIR` environment variable with value `C:\libs`. Then restart all terminal windows.
   - For Linux: Install `libpq` and `libsqlite3` depends on your distribution.
   - For MacOS: Install `libpq` using homebrew: `brew install libpq`
-- Rename `secret.key.sample` to `secret.key` or create your own key by running `head -c16 /dev/urandom > secret.key` in
-  command line (Linux/UNIX only) and copy to `/src` folder
+- Generate a secure JWT secret key by running `openssl rand -base64 64` and set it as `JWT_SECRET_KEY` in the `.env` file
 - Create a database in postgres cli or [pgAdmin](https://www.pgadmin.org/) tool
 - Rename `dotenv.sample` to `.env` and update the database connection string in `DATABASE_URL` key.
 - Build with release profile: `cargo build --release`

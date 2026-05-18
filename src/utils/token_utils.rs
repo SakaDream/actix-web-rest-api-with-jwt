@@ -5,14 +5,14 @@ use crate::{
     config::db::Pool,
     models::{
         user::User,
-        user_token::{UserToken, KEY},
+        user_token::{UserToken, get_jwt_secret},
     },
 };
 
 pub fn decode_token(token: String) -> jsonwebtoken::errors::Result<TokenData<UserToken>> {
     jsonwebtoken::decode::<UserToken>(
         &token,
-        &DecodingKey::from_secret(&KEY),
+        &DecodingKey::from_secret(get_jwt_secret()),
         &Validation::default(),
     )
 }

@@ -1,4 +1,5 @@
 use std::env;
+use std::sync::OnceLock;
 
 use chrono::Utc;
 use jsonwebtoken::{EncodingKey, Header};
@@ -7,8 +8,37 @@ use serde::{Deserialize, Serialize};
 
 use crate::models::user::LoginInfoDTO;
 
-pub static KEY: [u8; 16] = *include_bytes!("../secret.key");
 static ONE_WEEK: i64 = 60 * 60 * 24 * 7; // in seconds
+
+pub fn get_jwt_secret() -> &'static [u8] {
+    static KEY: OnceLock<Vec<u8>> = OnceLock::new();
+    KEY.get_or_init(|| {
+        let key_str = env::var("JWT_SECRET_KEY").unwrap_or_else(|_| {
+            panic!(
+                "JWT_SECRET_KEY environment variable must be set.\n\
+                 Generate one with: openssl rand -base64 64"
+            )
+        });
+        let known_weak = [
+            "", "CHANGE-ME", "secret", "changeme", "jwt_secret",
+            "your-secret-key",
+        ];
+        if known_weak.contains(&key_str.as_str()) {
+            panic!(
+                "JWT_SECRET_KEY is set to a known default value. \
+                 Please generate a secure random key."
+            );
+        }
+        if key_str.len() < 32 {
+            panic!(
+                "JWT_SECRET_KEY must be at least 32 characters long for security. \
+                 Current length: {}",
+                key_str.len()
+            );
+        }
+        key_str.into_bytes()
+    })
+}
 
 #[derive(Serialize, Deserialize)]
 pub struct UserToken {
@@ -48,7 +78,7 @@ impl UserToken {
         jsonwebtoken::encode(
             &Header::default(),
             &payload,
-            &EncodingKey::from_secret(&KEY),
+            &EncodingKey::from_secret(get_jwt_secret()),
         )
         .unwrap()
     }
