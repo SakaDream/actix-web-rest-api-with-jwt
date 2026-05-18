@@ -15,10 +15,10 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Get temporary secret key
+      - name: Set JWT_SECRET_KEY for CI
         shell: sh
         run: |
-          mv src/secret.key.sample src/secret.key
+          echo "JWT_SECRET_KEY=ci-test-key-32bytes-minimum-required!!" >> .env
 
       - name: Import sample dotenv file
         shell: sh
@@ -96,9 +96,9 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Get temporary secret key
+      - name: Set JWT_SECRET_KEY for CI
         shell: cmd
-        run: ren src\secret.key.sample secret.key
+        run: echo JWT_SECRET_KEY=ci-test-key-32bytes-minimum-required!! >> .env
 
       - name: Import sample dotenv file
         shell: cmd
@@ -182,10 +182,10 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Get temporary secret key
+      - name: Set JWT_SECRET_KEY for CI
         shell: sh
         run: |
-          mv src/secret.key.sample src/secret.key
+          echo "JWT_SECRET_KEY=ci-test-key-32bytes-minimum-required!!" >> .env
 
       - name: Import sample dotenv file
         shell: sh

@@ -20,8 +20,8 @@ jobs:
           profile: minimal
           override: true
 
-      - name: Generate secret key
-        run: head -c16 /dev/urandom > src/secret.key
+      - name: Generate JWT secret key
+        run: echo "JWT_SECRET_KEY=$(head -c32 /dev/urandom | base64)" >> .env
 
       - name: Cache cargo registry
         uses: actions/cache@v1
@@ -64,7 +64,7 @@ jobs:
           cp Dockerfile.github-action app/Dockerfile
           cp wait-for-it.sh app/wait-for-it.sh
           cd app
-          touch .env
+          cp ../.env .env
           tar -czvf ../app.tar.gz .
           cd ..
 

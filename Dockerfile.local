@@ -20,9 +20,9 @@ COPY ./src ./src
 COPY ./migrations ./migrations
 COPY ./diesel.toml .
 
-# add .env and secret.key for Docker env
+# add .env and JWT_SECRET_KEY for Docker env
 RUN touch .env; \
-    mv src/secret.key.sample src/secret.key
+    echo "JWT_SECRET_KEY=$(head -c32 /dev/urandom | base64)" >> .env
 
 # rebuild app with project source
 RUN rm ./target/debug/deps/actix_web_rest_api_with_jwt*; \
